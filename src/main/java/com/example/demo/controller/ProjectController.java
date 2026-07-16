@@ -25,6 +25,14 @@ public class ProjectController {
         return ProjectMapper.toDTO(project);
     }
 
+    @GetMapping
+    public List<ProjectDTO> getAllProjects() {
+        List<Project> projects = projectService.getAllProjects();
+        return projects.stream()
+            .map(ProjectMapper::toDTO)
+            .toList();
+    }
+
     @PostMapping
     public ProjectDTO createProject(@Valid @RequestBody ProjectDTO projectDTO) {
 
