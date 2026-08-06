@@ -3,6 +3,7 @@ package com.example.demo.config;
 import com.example.demo.service.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,33 +30,35 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
 
-        //busca la cabecera 
-        String authHeader = request.getHeader("Authorization");
+        String token = null;
 
-        //si el token es válido marca la petición como autenticada en Spring Security
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+        if(request.getCookies() != null) {
+            for (Cookie cookie : request.getCookies()) {
+                if (cookie.getName().equals("token")) {
+                    token = cookie.getValue();
+                }
+            }
+        }
+
+        if (token == null) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        //quita "Bearer"
-        String token = authHeader.substring(7);
-
         try {
             String username = jwtService.extractUsername(token);
 
-            //si no hay token o es inválido deja pasar la petición sin autenticar
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 if (jwtService.isTokenValid(token, username)) {
                     UsernamePasswordAuthenticationToken authToken =
-                            new UsernamePasswordAuthenticationToken(username, null, Collections.emptyList());
+                        new UsernamePasswordAuthenticationToken(username, null, Collections.emptyList());
                     SecurityContextHolder.getContext().setAuthentication(authToken);
                 }
-            }
+            } 
         } catch (Exception e) {
-            // Token inválido o expirado: simplemente no autenticamos, la petición seguirá sin usuario
+            //token inválido o expirado, no se autentica
         }
 
-        filterChain.doFilter(request, response);
+        filterChain.doFilter(request, response); 
     }
-}
+        }
