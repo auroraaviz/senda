@@ -1,6 +1,7 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import LogoutButton from "@/components/LogoutButton";
+import Link from "next/link";
 
 interface Project {
   id: number;
@@ -45,10 +46,25 @@ export default async function Home() {
           alignItems: "center",
           marginBottom: "24px",
         }}
-        >
-          <h1 style={{ fontSize: "28px", margin: 0 }}>Senda</h1>
+      >
+        <h1 style={{ fontSize: "28px", margin: 0 }}>Senda</h1>
+        <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
+          <Link
+            href="/projects/new"
+            style={{
+              padding: "8px 16px",
+              fontSize: "14px",
+              border: "1px solid #ddd",
+              borderRadius: "6px",
+              textDecoration: "none",
+              color: "black",
+            }}
+          >
+            + Nuevo proyecto
+          </Link>
           <LogoutButton />
         </div>
+      </div>
       <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
         {projects.map((project) => (
           <div
