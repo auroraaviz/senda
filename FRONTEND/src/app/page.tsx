@@ -66,13 +66,19 @@ export default async function Home() {
         </div>
       </div>
       <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+        
         {projects.map((project) => (
-          <div
+          <Link
             key={project.id}
+            href={`/projects/${project.id}`}
+            style={{ textDecoration: "none", color: "inherit" }}
+            >
+              <div
             style={{
               border: "1px solid #ddd",
               borderRadius: "8px",
               padding: "16px",
+              cursor: "pointer",
             }}
           >
             <h2 style={{ margin: 0 }}>{project.title}</h2>
@@ -80,8 +86,9 @@ export default async function Home() {
               Tamaño: {project.size} · Progreso: {project.progress}%
             </p>
           </div>
-        ))}
-      </div>
-    </main>
+        </Link>
+))}
+</div>
+</main>
   );
 }
