@@ -2,6 +2,7 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import LogoutButton from "@/components/LogoutButton";
 import StatusBadge from "@/components/StatusBadge";
+import DeleteProjectButton from "@/components/DeleteProjectButton"; 
 import Link from "next/link";
 
 interface Project {
@@ -117,6 +118,11 @@ export default async function Home() {
                         />
                     </div>
                   </div>
+
+                  <div className="mt-3 flex justify-end">
+                    <DeleteProjectButton projectId={project.id} />
+                  </div>
+
                 </Link>
             ))}
           </div>

@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import AddPhaseForm from "@/components/AddPhaseForm";
 import PhaseProgressControl from "@/components/PhaseProgressControl"; 
+import DeleteProjectButton from "@/components/DeleteProjectButton";
 
 interface Project {
     id: number;
@@ -81,11 +82,14 @@ export default async function ProjectDetailPage({
                 Volver
                 </Link>
 
-                <div className="mt-4 mb-8">
+                <div className="mt-4 mb-8 flex items-start justify-between gap-3">
+                    <div>
                     <h1 className="text-2xl font-display font-semibold text-ink">{project.title}</h1>
                     <p className="text-sm text-ink/60 mt-1 font-mono">
                         {sizeLabels[project.size]} · {project.progress}% recorrido
                     </p>
+                </div>
+                <DeleteProjectButton projectId={project.id} redirectTo="/" />
                 </div>
 
                 <h2 className="text-lg font-display font-semibold text-ink mb-4"> Fases del proyecto </h2>
