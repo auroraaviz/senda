@@ -2,8 +2,10 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import AddPhaseForm from "@/components/AddPhaseForm";
-import PhaseProgressControl from "@/components/PhaseProgressControl"; 
-import DeleteProjectButton from "@/components/DeleteProjectButton";
+import PhaseProgressControl from "@/components/PhaseProgressControl";
+import EditProjectPanel from "@/components/EditProjectPanel";
+import { Sarpanch } from "next/font/google";
+
 
 interface Project {
     id: number;
@@ -60,12 +62,6 @@ async function getPhases(id: string): Promise<Phase[]> {
     return res.json();
 }
 
-const sizeLabels: Record<Project["size"], string> = {
-    SMALL: "Pequeño",
-    MEDIUM: "Mediano",
-    LARGE: "Grande",
-};
-
 export default async function ProjectDetailPage({
     params,
 }: {
@@ -74,7 +70,7 @@ export default async function ProjectDetailPage({
     const { id } = await params;
     const [project, phases] = await Promise.all([getProject(id), getPhases(id)]);
     const sortedPhases = [...phases].sort((a, b) => a.orderNumber - b.orderNumber);
-
+    
     return (
         <main className="min-h-screen px-6 py-10 md:px-12">
             <div className="max-w-2xl mx-auto">
@@ -82,21 +78,13 @@ export default async function ProjectDetailPage({
                 Volver
                 </Link>
 
-                <div className="mt-4 mb-8 flex items-start justify-between gap-3">
-                    <div>
-                    <h1 className="text-2xl font-display font-semibold text-ink">{project.title}</h1>
-                    <p className="text-sm text-ink/60 mt-1 font-mono">
-                        {sizeLabels[project.size]} · {project.progress}% recorrido
-                    </p>
-                </div>
-                <DeleteProjectButton projectId={project.id} redirectTo="/" />
-                </div>
+                <EditProjectPanel project={project} />
 
                 <h2 className="text-lg font-display font-semibold text-ink mb-4"> Fases del proyecto </h2>
-                
-                {sortedPhases.length === 0 ? (
+
+                {sortedPhases.length === 0 ? ( 
                     <p className="text-sm text-ink/50 mb-8"> Este proyecto aún no tiene fases </p>
-                ) : ( 
+                ) : (
                     <div className="mb-8">
                         {sortedPhases.map((phase, index) => {
                             const done = phase.progress >= 100;
@@ -104,13 +92,13 @@ export default async function ProjectDetailPage({
                             return (
                                 <div key={phase.id} className="relative pl-8 pb-6 last:pb-0">
                                     {!isLast && (
-                                        <span 
+                                        <span
                                         className={`absolute left-[7px] top-4 w-0.5 h-full ${
                                             done ? "bg-primary" : "bg-border"
                                         }`}
                                         />
                                     )}
-                                    <span
+                                    <span 
                                     className={`absolute left-0 top-1 w-4 h-4 rounded-full border-2 ${
                                         done
                                         ? "bg-primary border-primary"
@@ -131,16 +119,18 @@ export default async function ProjectDetailPage({
                                         </p>
                                         <PhaseProgressControl projectId={project.id} phase={phase} />
                                     </div>
-                               </div>
+                                    </div>
                             );
                         })}
-                  </div>
+                        </div>
                 )}
- 
+
                 <div className="bg-white/60 border border-border rounded-2xl p-5">
-                    <AddPhaseForm projectId={project.id} />
+                <AddPhaseForm projectId={project.id} />
                 </div>
             </div>
         </main>
     );
-} 
+}
+
+    
