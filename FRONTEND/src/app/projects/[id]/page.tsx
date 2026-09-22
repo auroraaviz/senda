@@ -4,7 +4,8 @@ import Link from "next/link";
 import AddPhaseForm from "@/components/AddPhaseForm";
 import PhaseProgressControl from "@/components/PhaseProgressControl";
 import EditProjectPanel from "@/components/EditProjectPanel";
-import { Sarpanch } from "next/font/google";
+import DeletePhaseButton from "@/components/DeletePhaseButton"; 
+import EditPhasePanel from "@/components/EditPhasePanel";
 
 
 interface Project {
@@ -106,20 +107,16 @@ export default async function ProjectDetailPage({
                                     }`}
                                     />
                                     <div className="bg-white/60 border border-border rounded-xl p-4">
-                                        <div className="flex items-center justify-between gap-3">
-                                            <h3 className="font-medium text-ink">
-                                                {phase.orderNumber}. {phase.name}
-                                            </h3>
-                                            <span className="text-xs font-mono text-ink/60 whitespace-nowrap">
-                                            {phase.progress}%
-                                            </span>
-                                        </div>
+                                        <EditPhasePanel projectId={project.id} phase={phase} />
                                         <p className="text-xs text-ink/50 mt-1.5 font-mono">
                                         Peso {phase.weight} · {phase.dueDate ?? "sin fecha límite"}
                                         </p>
                                         <PhaseProgressControl projectId={project.id} phase={phase} />
+                                        <div className="mt-2 flex justify-end">
+                                            <DeletePhaseButton projectId={project.id} phaseId={phase.id} />                                   
+                                        </div>
                                     </div>
-                                    </div>
+                                   </div>                        
                             );
                         })}
                         </div>
