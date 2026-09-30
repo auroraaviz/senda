@@ -2,25 +2,32 @@
 
 :root {
   --paper: #F6F4EA;
+  --surface: #FFFFFF;
   --ink: #2E211B; 
+  --ink-soft: #7A6B63;
   --primary: #754C44;
   --primary-dark: #591A2A;
   --accent: #C3C947;
   --secondary: #9DB684;
+  --oxido: #B8562E;
   --border-color: #E4DCC8; 
 }
 
 @theme inline {
   --color-paper: var(--paper);
   --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
   --color-primary: var(--primary);
   --color-primary-dark: var(--primary-dark);
   --color-accent: var(--accent);
   --color-secondary: var(--secondary);
+  --color-oxido: var(--oxido);
   --color-border: var(--border-color);
   --font-display: var(--font-quicksand);
   --font-sans: var(--font-mulish);
   --font-mono: var(--font-plex-mono);
+  --radius-card: 1.25rem;
+  --shadow-card: 0 1px 2px rgb(46 33 27 / 0.04), 4px 16px rgb(46 33 27 / 0.05);
 }
 
 @layer base {

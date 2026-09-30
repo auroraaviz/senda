@@ -36,33 +36,33 @@ async function getProjects(): Promise<Project[]> {
   return res.json();
 }
 
-const sizeStyles: Record<Project["size"], string> = {
-  SMALL: "bg-secondary/20 text-primary-dark",
-  MEDIUM: "bg-primary/15 text-primary-dark",
-  LARGE: "bg-primary-dark/15 text-primary-dark",
-};
-
 const sizeLabels: Record<Project["size"], string> = {
   SMALL: "Pequeño",
   MEDIUM: "Mediano",
   LARGE: "Grande",
 };
 
+function barColorFor(status?: string): string {
+  if (status === "COMPLETED") return "bg-secondary";
+  if (status === "DELAYED") return "bg-oxido";
+  return "bg-accent";
+}
+
 export default async function Home() {
   const projects = await getProjects();
 
   return (
     <main className="min-h-screen px-6 py-10 md:px-12">
-      <div className="max-w-3xl mx-auto">
-        <div className="flex items-center justify-between mb-10">
+      <div className="mx-auto max-w-6xl">
+        <div className="mb.12 flex flex-wrap items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-display font-semibold text-ink"> Senda </h1>
-            <p className="text-sm text-ink/60 mt-0.5"> Tus proyectos en curso </p>
+            <h1 className="font-display text-4xl font-bold text-ink md:text-5xl"> Senda </h1>
+            <p className="mt-2 text-base text-ink-soft"> Tus proyectos en curso </p>
           </div>
           <div className="flex items-center gap-3">
             <Link
               href="/projects/new"
-              className="px-4 py-2 rounded-lg bg-primary text-paper text-sm font-medium hover:bg-primary-dark transition-colors">
+              className="rounded-full bg-primary px-6 py-3 text-base font-semibold text-paper transition-colors hover:bg-primary-dark">
                 + Nuevo proyecto
               </Link>
               <LogoutButton />
@@ -70,56 +70,53 @@ export default async function Home() {
         </div>
 
         {projects.length === 0 ? (
-          <div className="text-center py-16 border border-dashed border-border rounded-2x1">
-            <p className="text-ink font-medium"> Empieza con tu primer proyecto </p>
-            <p className="text-sm text-ink/60 mt-1">
+          <div className="rounded-card border border-dashed border-border bg-surface/60 py-20 text-center">
+            <p className="font-display text-2xl font-semibold text-ink"> Empieza con tu primer proyecto </p>
+            <p className="mt-2 text-base text-ink-soft">
               Crea un proyecto para organizar sus fases y seguir su progreso.
             </p>
             <Link 
               href="/projects/new"
-              className="inline-block mt-4 px-4 py-2 rounded-lg bg-primary text-paper text-sm font-medium hover:bg-primary-dark transition-colors">
+              className="mt-6 inline-block rounded-full bg-primary px-6 py-3 text-base font-semibold text-paper transition-color hover:bg-primary-dark">
                 Crear proyecto
               </Link>
         </div>  
         ) : (
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {projects.map((project) => (
               <Link
                 key={project.id}
                 href={`/projects/${project.id}`}
-                className="block bg-white/60 border border-border rounded-2xl p-5 hover:border-primary/40 transition-colors">
+                className="group flex flex-col rounded-card bg-surface p-6 shadow-card transition-transform hover:-translate-y-0.5">
                   <div className="flex items-start justify-between gap-3">
-                    <h2 className="font-medium text-ink">{project.title}</h2>
+                    <h2 className="font-display text-xl font-semibold text-ink">
+                      {project.title}</h2>
                     <span
-                      className={`text-xs font-medium px-2 py-0.5 rounded-full whitespace-nowrap ${sizeStyles[project.size]} `}>
+                      className="whitespace-nowrap text-sm font-semibold text-ink-soft">
                         {sizeLabels[project.size]}
                       </span>
                   </div>
 
-                  <div className="mt-2">
+                  <div className="mt-3">
                     <StatusBadge status={project.status} />
                   </div>
 
-                  <div className="mt-5">
-                    <div className="flex items-center justify-between mb-1.5">
-                      <span className="text-xs text-ink/50 font-mono"> Progreso </span>
-                      <span className="text-xs text-ink/70 font-mono font-medium">
+                  <div className="mt-6">
+                    <div className="mb-2 flex items-center justify-between">
+                      <span className="text-sm text-ink-soft"> Progreso </span>
+                      <span className="font-mono text-base font-semibold text-ink">
                         {project.progress}%
                       </span>                   
                     </div>
-                    <div className="relative h-1.5 rounded-full bg-border">
+                    <div className="h-2.5 overflow-hidden rounded-full bg-border">
                       <div
-                        className="absolute inset-y-0 left-0 rounded-full bg-secondary"
+                        className={`h-full rounded-full transition-all ${barColorFor(project.status)}`}
                         style={{ width: `${project.progress}%` }}
-                        />
-                      <div
-                        className="absolute top-1/2 w-2.5 h-2.5 rounded-full bg-primary border-2 border-paper -translate-y-1/2"
-                        style={{ left: `calc(${project.progress}% - 5px)` }}
                         />
                     </div>
                   </div>
 
-                  <div className="mt-3 flex justify-end">
+                  <div className="mt-5 flex justify-end border-t border-border pt-4">
                     <DeleteProjectButton projectId={project.id} />
                   </div>
 

@@ -40,7 +40,7 @@ export default function DeleteProjectButton({
         <button 
             onClick={handleDelete}
             disabled={loading}
-            className="text-xs text-ink/40 hover:text-primary-dark transition-colors disabled:opacity-50">
+            className="rounded-full border border-oxido/30 px-5 py-2 text-sm font-semibold text-oxido transition-colors hover:bg-oxido/10 disabled:opacity-50">
                 {loading ? "Eliminando..." : "Eliminar"}
             </button>
     );

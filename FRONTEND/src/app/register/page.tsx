@@ -39,43 +39,43 @@ export default function RegisterPage() {
 
         return (
             <div className="min-h-screen flex items-center justify-center px-4">
-                <div className="w-full max-w-sm">
+                <div className="w-full max-w-md">
                     <div className="mb-8 text-center">
                         <div className="inline-flex items-center gap-2 mb-2">
                             <span className="w-2 h-2 rounded-full bg-secondary" />
                             <span className="w-2 h-2 rounded-full bg-primary-dark" />
                             <span className="w-2 h-2 rounded-full bg-primary" />
                         </div>
-                        <h1 className="text-3xl font-display font-semibold text-ink"> Crear cuenta </h1>
-                        <p className="text-sm text-ink/60 mt-1"> Sigue el progreso de tu proyecto </p>
+                        <h1 className="text-4xl font-display font-semibold text-ink"> Crear cuenta </h1>
+                        <p className="text-base text-ink-soft mt-2"> Sigue el progreso de tu proyecto </p>
                     </div>
 
                     <form 
                         onSubmit={handleSubmit}
-                        className="bg-white/60 border border-border rounded-2x1 p-6 flex flex-col gap-4"
+                        className="bg-surface border border-border rounded-card p-8 flex flex-col gap-5"
                         >
                             <div className="flex flex-col gap-1.5">
-                                <label className="text-xs font-medium text-ink/70"> Usuario </label>
+                                <label className="text-sm font-semibold text-ink-soft"> Usuario </label>
                                 <input
                                     type="text"
                                     value={username}
                                     onChange={(e) => setUsername(e.target.value)}
                                     required
-                                    className="px-3 py-2.5 rounded-lg border border-border bg-paper text-ink text-sm focus:outline-none focus:ring-2 focus:ring-primary/40" />
+                                    className="px-4 py-3 rounded-xl border border-border bg-paper text-ink text-base focus:outline-none focus:ring-2 focus:ring-primary/40" />
                             </div>
 
                             <div className="flex flex-col gap-1.5">
-                                <label className="text-xs font-medium text-ink/70"> Contraseña </label>
+                                <label className="text-sm font-semibold text-ink-soft"> Contraseña </label>
                                 <input
                                     type="password"
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
                                     required
-                                    className="px-3 py-2.5 rounded-lg border border-border bg-paper text-ink text-sm focus:outline-none focus:ring-2 focus:ring-primary/40" />
+                                    className="px-4 py-3 rounded-xl border border-border bg-paper text-ink text-base focus:outline-none focus:ring-2 focus:ring-primary/40" />
                             </div>
 
                             {error && (
-                                <p className="text-xs text-primary-dark bg-primary/10 rounded-lg px-3 py-2">
+                                <p className="text-sm text-primary-dark bg-primary/10 rounded-xl px-4 py-3">
                                     {error}
                                 </p>
                             )}
@@ -83,12 +83,12 @@ export default function RegisterPage() {
                             <button 
                                 type="submit"
                                 disabled={loading}
-                                className="mt-2 py-2.5 rounded-lg bg-primary text-paper text-sm font-medium hover:bg-primary-dark transition-colors disabled:opacity-60">
+                                className="mt-2 py-3 rounded-full bg-primary text-paper text-base font-semibold hover:bg-primary-dark transition-colors disabled:opacity-60">
                                     {loading ? "Creando..." : "Registrarse"}
                                 </button>
                         </form>
 
-                        <p className="mt-5 text-center text-sm text-ink/60">
+                        <p className="mt-6 text-center text-base text-ink-soft">
                             ¿Ya tienes cuenta? {" "}
                         <Link href="/login" className="text-primary font-medium hover:underline">
                             Iniciar sesión

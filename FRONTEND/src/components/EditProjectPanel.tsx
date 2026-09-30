@@ -4,14 +4,16 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { api } from "@/lib/api";
 import DeleteProjectButton from "./DeleteProjectButton";
+import StatusBadge from "./StatusBadge";
 
 interface Project {
     id: number;
-    title:  string;
+    title: string;
     size: "SMALL" | "MEDIUM" | "LARGE";
     startDate: string | null;
     endDate: string | null;
     progress: number;
+    status?: string;
 }
 
 const sizeLabels: Record<Project["size"], string> = {
@@ -20,7 +22,26 @@ const sizeLabels: Record<Project["size"], string> = {
     LARGE: "Grande",
 };
 
-export default function EditProjectPanel({ project}: { project: Project }) {
+function formatDate(date: string | null): string {
+    if (!date) return "Sin fecha";
+    return new Date(`${date.slice(0, 10)}T00:00:00`).toLocaleDateString("es-ES", {
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+    });
+}
+
+function barColorFor(status?: string): string {
+    if (status === "COMPLETED") return "bg-secondary";
+    if (status === "DELAYED") return "bg-oxido";
+    return "bg-accent";
+}
+
+const inputClass =
+    "w-full rounded-xl border border-border bg-paper px-4 py-3 text-base text-ink focus:outline-none focus:ring-2 focus:ring-primary/40";
+const labelClass = "text-sm font-semibold text-ink-soft";
+
+export default function EditProjectPanel({ project }: { project: Project }) {
     const [isEditing, setIsEditing] = useState(false);
     const [title, setTitle] = useState(project.title);
     const [size, setSize] = useState(project.size);
@@ -45,7 +66,7 @@ export default function EditProjectPanel({ project}: { project: Project }) {
             setIsEditing(false);
             router.refresh();
         } catch (err) {
-            setError ("No se han guardado los cambios");
+            setError("No se han guardado los cambios");
         } finally {
             setLoading(false);
         }
@@ -62,91 +83,145 @@ export default function EditProjectPanel({ project}: { project: Project }) {
 
     if (!isEditing) {
         return (
-            <div className="mt-4 mb-8 flex items-start justify-between gap-3">
-                <div>
-                    <h1 className="text-2xl font-display font-semibold text-ink">{project.title}</h1>
-                    <p className="text-sm text-ink/60 mt-1 font-mono">
-                        {sizeLabels[project.size]} · {project.progress}% recorrido 
-                    </p>
+            <section className="rounded-card bg-surface p-6 shadow-card md:p-10">
+                <div className="grid gap-8 md:grid-cols-[1fr_auto] md:items-center">
+                    {/* Izquierda: título y datos */}
+                    <div>
+                        <div className="flex flex-wrap items-center gap-3">
+                            <StatusBadge status={project.status} />
+                            <span className="text-sm font-semibold text-ink-soft">
+                                Proyecto {sizeLabels[project.size].toLowerCase()}
+                            </span>
+                        </div>
+
+                        <h1 className="mt-4 font-display text-4xl font-bold leading-tight text-ink md:text-5xl">
+                            {project.title}
+                        </h1>
+
+                        <dl className="mt-6 flex flex-wrap gap-x-10 gap-y-3">
+                            <div>
+                                <dt className="text-sm text-ink-soft">Inicio</dt>
+                                <dd className="text-base font-semibold text-ink">
+                                    {formatDate(project.startDate)}
+                                </dd>
+                            </div>
+                            <div>
+                                <dt className="text-sm text-ink-soft">Entrega</dt>
+                                <dd className="text-base font-semibold text-ink">
+                                    {formatDate(project.endDate)}
+                                </dd>
+                            </div>
+                        </dl>
+                    </div>
+
+                    {/* Derecha: progreso general */}
+                    <div className="md:min-w-[260px]">
+                        <p className="text-sm font-semibold uppercase tracking-wide text-ink-soft">
+                            Progreso general
+                        </p>
+                        <p className="mt-1 font-mono text-7xl font-medium leading-none text-ink">
+                            {project.progress}
+                            <span className="text-4xl text-ink-soft">%</span>
+                        </p>
+                        <div className="mt-4 h-3 overflow-hidden rounded-full bg-border">
+                            <div
+                                className={`h-full rounded-full transition-all ${barColorFor(project.status)}`}
+                                style={{ width: `${project.progress}%` }}
+                            />
+                        </div>
+                    </div>
                 </div>
-                <div className="flex items-center gap-3">
+
+                <div className="mt-8 flex items-center justify-end gap-3 border-t border-border pt-5">
                     <button
-                    onClick={() => setIsEditing(true)}
-                    className="text-xs text-ink/40 hover:text-primary transition-colors">
-                        Editar
+                        onClick={() => setIsEditing(true)}
+                        className="rounded-full border border-border px-5 py-2 text-sm font-semibold text-ink transition-colors hover:border-primary hover:text-primary"
+                    >
+                        Editar proyecto
                     </button>
                     <DeleteProjectButton projectId={project.id} redirectTo="/" />
                 </div>
-            </div>
+            </section>
         );
     }
 
     return (
         <form
-        onSubmit={handleSave}
-        className="mt-4 mb-8 bg-white/60 border border-border rounded-2xl p-5 flex flex-col gap-4">
-            <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-medium text-ink/70">Título</label>
+            onSubmit={handleSave}
+            className="flex flex-col gap-6 rounded-card bg-surface p-6 shadow-card md:p-10"
+        >
+            <h2 className="font-display text-2xl font-bold text-ink">Editar proyecto</h2>
+
+            <div className="flex flex-col gap-2">
+                <label className={labelClass}>Título</label>
                 <input
                     type="text"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                     required
-                    className="px-3 py-2.5 rounded-lg border border-border bg-paper text-ink text-sm focus: outline-none focus:ring-2 focus:ring-primary/40" />
-                    </div>
+                    className={inputClass}
+                />
+            </div>
 
-                <div className="flex flex-col gap-1.5">
-                    <label className="text-xs font-medium text-ink/70">Tamaño</label>
-                    <select
-                        value={size}
-                        onChange={(e) => setSize(e.target.value as Project["size"])}
-                        className="px-3 py-2.5 rounded-lg border border-border bg-paper text-ink text-sm focus:outline-none focus:ring-2 focus:ring-primary/40">
-                            <option value="SMALL">Pequeño</option>
-                            <option value="MEDIUM">Mediano</option>
-                            <option value="LARGE">Grande</option>
-                        </select>
+            <div className="flex flex-col gap-2">
+                <label className={labelClass}>Tamaño</label>
+                <select
+                    value={size}
+                    onChange={(e) => setSize(e.target.value as Project["size"])}
+                    className={inputClass}
+                >
+                    <option value="SMALL">Pequeño</option>
+                    <option value="MEDIUM">Mediano</option>
+                    <option value="LARGE">Grande</option>
+                </select>
+            </div>
+
+            <div className="grid gap-4 sm:grid-cols-2">
+                <div className="flex flex-col gap-2">
+                    <label className={labelClass}>Fecha de inicio</label>
+                    <input
+                        type="date"
+                        value={startDate}
+                        onChange={(e) => setStartDate(e.target.value)}
+                        required
+                        className={inputClass}
+                    />
                 </div>
+                <div className="flex flex-col gap-2">
+                    <label className={labelClass}>Fecha de fin</label>
+                    <input
+                        type="date"
+                        value={endDate}
+                        onChange={(e) => setEndDate(e.target.value)}
+                        required
+                        className={inputClass}
+                    />
+                </div>
+            </div>
 
-                <div className="grid grid-cols-2 gap-3">
-                    <div className="flex flex-col gap-1.5">
-                        <label className="text-xs font-medium text-ink/70">Fecha de inicio</label>
-                        <input
-                            type="date"
-                            value={startDate}
-                            onChange={(e) => setStartDate(e.target.value)}
-                            required
-                            className="px-3 py-2.5 rounded-lg border border-border bg-paper text-ink text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"/>
-                            </div>
-                            <div className="flex flex-col gap-1.5">
-                                <label className="text-xs font-medium text-ink/70">Fecha de fin</label>
-                                <input
-                                    type="date"
-                                    value={endDate}
-                                    onChange={(e) => setEndDate(e.target.value)}
-                                    required
-                                    className="px-3 py-2.5 rounded-lg border border-border bg-paper text-ink text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"/>
-                            </div>
-                        </div>
+            {error && (
+                <p className="rounded-xl bg-oxido/10 px-4 py-3 text-sm font-semibold text-oxido">
+                    {error}
+                </p>
+            )}
 
-                        {error && (
-                            <p className="text-xs text-primary-dark bg-primary/10 rounded-lg px-3 py-2">{error}</p>
-                        )}
-
-                        <div className="flex gap-3">
-                            <button
-                                type="submit"
-                                disabled={loading}
-                                className="flex-1 py-2.5 rounded-lg bg-primary text-paper text-sm font-medium hover:bg-primary-dark transition-colors disabled:opacity-60">
-                                    {loading ? "Guardando..." : "Guardar"}
-                                    </button>
-                            <button
-                                type="button"
-                                onClick={handleCancel}
-                                disabled={loading}
-                                className="flex-1 py-2.5 rounded-lg border border-border text-ink text-sm font-medium hover:bg-white transition-colors">
-                                    Cancelar
-                                </button>
-                        </div>
-                            </form>
+            <div className="flex gap-3">
+                <button
+                    type="submit"
+                    disabled={loading}
+                    className="flex-1 rounded-full bg-primary py-3 text-base font-semibold text-paper transition-colors hover:bg-primary-dark disabled:opacity-60"
+                >
+                    {loading ? "Guardando..." : "Guardar"}
+                </button>
+                <button
+                    type="button"
+                    onClick={handleCancel}
+                    disabled={loading}
+                    className="flex-1 rounded-full border border-border py-3 text-base font-semibold text-ink transition-colors hover:bg-paper"
+                >
+                    Cancelar
+                </button>
+            </div>
+        </form>
     );
 }

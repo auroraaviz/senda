@@ -1,28 +1,22 @@
 type ProjectStatus = "PLANNED" | "IN_PROGRESS" | "COMPLETED" | "DELAYED";
 
-const statusStyles: Record<ProjectStatus, string> = {
-    PLANNED: "bg-secondary/20 text-primary-dark",
-    IN_PROGRESS: "bg-primary/15 text-primary-dark",
-    COMPLETED: "bg-accent/25 text-primary-dark",
-    DELAYED: "bg-[#591A2A]/20 text-[#2E0F16]",
-};
-
-const statusLabels: Record<ProjectStatus, string> = {
-    PLANNED: "Planificado",
-    IN_PROGRESS: "En curso",
-    COMPLETED: "Completado",
-    DELAYED: "Retrasado",
+const STYLES: Record<ProjectStatus, { label: string; className: string; dot: string }> = {
+    PLANNED: { label: "Planificado", className: "bg-border text-ink-soft", dot: "bg-ink-soft" },
+    IN_PROGRESS: { label: "En progreso", className: "bg-accent/25 text-ink", dot: "bg-accent" },
+    COMPLETED: { label: "Completado", className: "bg-secondary/30 text-ink", dot: "bg-secondary" },
+    DELAYED: { label: "Retrasado", className: "bg-oxido/15 text-oxido", dot: "bg-oxido" },
 };
 
 export default function StatusBadge({ status }: { status?: string }) {
-    if (!status || !(status in statusLabels)) return null;
+    if (!status || !(status in STYLES)) return null;
 
-    const s = status as ProjectStatus;
+    const { label, className, dot } = STYLES[status as ProjectStatus];
 
     return (
         <span
-            className={`text-xs font-medium px-2 py-0.5 rounded-full whitespace-nowrap ${statusStyles[s]}`}>
-                {statusLabels[s]}
+            className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold ${className}`} >
+                <span className={`h-1.5 w-1.5 rounded-full ${dot}`} />
+                {label} 
             </span>
     );
 }

@@ -32,9 +32,10 @@ export default function RootLayout({
   return (
     <html
       lang="es"
-      className={`${quicksand.variable} ${mulish.variable} ${plexMono.variable} h-full antialiased`}
-      >
-        <body className="min-h-full flex flex-col bg-paper text-ink">{children}</body>
+      className={`${quicksand.variable} ${mulish.variable} ${plexMono.variable} h-full antialiased`}>
+        <body className="min-h-full flex flex-col bg-paper text-ink">
+          {children}
+        </body>
       </html>
   );
 }

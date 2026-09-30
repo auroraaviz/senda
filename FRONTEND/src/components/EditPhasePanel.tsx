@@ -61,16 +61,16 @@ export default function EditPhasePanel({
     if (!isEditing) {
         return (
             <div className="flex items-center justify-between gap-3">
-                <h3 className="font-medium text-ink">
+                <h3 className="text-xl font-display font-semibold text-ink">
                     {phase.orderNumber}. {phase.name}
                 </h3>
-                <div className="flex items-center gap-2">
-                    <span className="text-xs font-mono text-ink/60 whitespace-nowrap">
+                <div className="flex items-center gap-3">
+                    <span className="text-sm font-mono text-ink-soft whitespace-nowrap">
                     {phase.progress}%
                     </span>
                     <button
                     onClick={() => setIsEditing(true)}
-                    className="text-xs text-ink/40 hover:text-primary transition-colors">
+                    className="text-sm font-semibold text-ink-soft hover:text-primary transition-colors">
                         Editar
                     </button>
                 </div>
@@ -81,18 +81,18 @@ export default function EditPhasePanel({
     return (
         <form onSubmit={handleSave} className="flex flex-col gap-3">
             <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-medium text-ink/70">Nombre</label>
+                <label className="text-sm font-semibold text-ink-soft">Nombre</label>
                 <input
                     type="text"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     required
-                    className="px-3 py-2 rounded-lg border border-border bg-paper text-ink text-sm focus:outline-none focus:ring-2 focus:ring-primary/40" />
+                    className="px-4 py-3 rounded-xl border border-border bg-paper text-ink text-sm focus:outline-none focus:ring-2 focus:ring-primary/40" />
             </div>
 
             <div className="grid grid-cols-2 gap-3">
                 <div className="flex flex-col gap-1.5">
-                    <label className="text-xs font-medium text-ink/70">Peso</label>
+                    <label className="text-sm font-semibold text-ink-soft">Peso</label>
                     <input
                         type="number"
                         min={1}
@@ -100,15 +100,15 @@ export default function EditPhasePanel({
                         value={weight}
                         onChange={(e) => setWeight(Number(e.target.value))}
                         required
-                        className="px-3 py-2 rounded-lg border border-border bg-paper text-ink text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"/>
+                        className="px-4 py-3 rounded-xl border border-border bg-paper text-ink text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"/>
                 </div>
                 <div className="flex flex-col gap-1.5">
-                    <label className="text-xs font-medium text-ink/70">Fecha límite</label>
+                    <label className="text-sm font-semibold text-ink-soft">Fecha límite</label>
                     <input
                         type="date"
                         value={dueDate}
                         onChange={(e) => setDueDate(e.target.value)}
-                        className="px-3 py-2 rounded-lg border border-border bg-paper text-ink text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"/>
+                        className="px-4 py-3 rounded-xl border border-border bg-paper text-ink text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"/>
                 </div>
             </div>
 
@@ -120,14 +120,14 @@ export default function EditPhasePanel({
                 <button
                     type="submit"
                     disabled={loading}
-                    className="flex-1 py-2 rounded-lg bg-primary text-paper text-sm font-medium hover:bg-primary-dark transition-colors disabled:opacity-60">
+                    className="flex-1 py-3 rounded-full bg-primary text-paper text-base font-semibold hover:bg-primary-dark transition-colors disabled:opacity-60">
                         {loading ? "Guardando..." : "Guardar"}
                     </button>
                     <button
                         type="button"
                         onClick={handleCancel}
                         disabled={loading}
-                        className="flex-1 py-2 rounded-lg border border-border text-ink text-sm font-medium hover:bg-white transition-colors">
+                        className="flex-1 py-3 rounded-full border border-border text-ink text-base font-semibold hover:bg-paper transition-colors">
                             Cancelar
                         </button>
             </div>
