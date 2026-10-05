@@ -120,7 +120,12 @@ export default async function ProjectDetailPage({
                                     key={phase.id}
                                     className="rounded-card bg-surface p-6 shadow-card md:p-8">
                                         <div className="flex items-start gap-4">
-                                            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary font-mono text-base font-semibold text-paper">
+                                            <span 
+                                                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full font-mono text-base font-semibold text-paper transition-colors duration-500"
+                                                style={{
+                                                    background: phase.progress >= 100 ? "var(--secondary)" : "var(--primary)",
+                                                }}
+                                            >
                                             {phase.orderNumber}
                                             </span>
                                         <div className="min-w-0 flex-1">

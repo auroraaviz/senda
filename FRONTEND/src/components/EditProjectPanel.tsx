@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { api } from "@/lib/api";
 import DeleteProjectButton from "./DeleteProjectButton";
@@ -49,7 +49,27 @@ export default function EditProjectPanel({ project }: { project: Project }) {
     const [endDate, setEndDate] = useState(project.endDate ?? "");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
+    const [displayedProgress, setDisplayedProgress] = useState(0);
     const router = useRouter();
+
+    useEffect(() => {
+        const target = project.progress;
+        const duration = 800;
+        const start = performance.now();
+
+        function tick(now: number) {
+            const elapsed = now - start;
+            const ratio = Math.min(elapsed / duration, 1);
+            const eased = 1 - Math.pow(1 - ratio, 3);
+            setDisplayedProgress(Math.round(eased * target));
+
+            if (ratio < 1) {
+                requestAnimationFrame(tick);
+            }
+        }
+
+        requestAnimationFrame(tick);
+    }, [project.progress]); 
 
     async function handleSave(e: React.FormEvent) {
         e.preventDefault();
@@ -120,13 +140,16 @@ export default function EditProjectPanel({ project }: { project: Project }) {
                             Progreso general
                         </p>
                         <p className="mt-1 font-mono text-7xl font-medium leading-none text-ink">
-                            {project.progress}
+                            {displayedProgress}
                             <span className="text-4xl text-ink-soft">%</span>
                         </p>
                         <div className="mt-4 h-3 overflow-hidden rounded-full bg-border">
                             <div
-                                className={`h-full rounded-full transition-all ${barColorFor(project.status)}`}
-                                style={{ width: `${project.progress}%` }}
+                                className={`h-full rounded-full ${barColorFor(project.status)}`}
+                                style={{ 
+                                    width: `${displayedProgress}%`,
+                                    transition: "width 800ms cubic-bezier(0.34, 1.56, 0.64, 1)",
+                                }}
                             />
                         </div>
                     </div>

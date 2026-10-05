@@ -56,8 +56,11 @@ export default function PhaseProgressControl ({
                     {/*Pista y relleno*/}
                     <div className="absolute left-0 right-0 top-1/2 h-3 -translate-y-1/2 overflow-hidden rounded-full bg-border">
                     <div
-                        className={`h-full rounded-full transition-all duration-200 ${color}`}
-                        style={{ width: `${progress}%` }} />
+                        className={`h-full rounded-full ${color}`}
+                        style={{ 
+                            width: `${progress}%`,
+                            transition: "width 500ms cubic-bezier(0.34, 1.56, 0.64, 1)",
+                            }} />
                     </div>
 
                     {/*Slider invisible para arrastrar*/}
