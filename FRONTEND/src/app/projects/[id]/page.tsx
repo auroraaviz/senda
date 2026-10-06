@@ -31,7 +31,7 @@ async function getProject(id: string): Promise<Project> {
     const cookieStore = await cookies();
     const token = cookieStore.get("token");
 
-    const res = await fetch(`http://localhost:8080/projects/${id}`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/projects/${id}`, {
         headers: token ? { Cookie: `token=${token.value}` } : {},
         cache: "no-store",
     });
@@ -49,7 +49,7 @@ async function getPhases(id: string): Promise<Phase[]> {
     const cookieStore = await cookies();
     const token = cookieStore.get("token");
 
-    const res = await fetch(`http://localhost:8080/projects/${id}/phases`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/projects/${id}/phases`, {
         headers: token ? { Cookie: `token=${token.value}` } : {},
         cache: "no-store",
     });

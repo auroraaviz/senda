@@ -20,7 +20,7 @@ async function getProjects(): Promise<Project[]> {
   const cookieStore = await cookies();
   const token = cookieStore.get("token");
 
-  const res = await fetch("http://localhost:8080/projects", {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/projects`, {
     headers: token ? { Cookie: `token=${token.value}` } : {},
     cache: "no-store",
   });
