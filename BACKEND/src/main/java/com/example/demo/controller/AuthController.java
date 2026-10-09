@@ -11,6 +11,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.time.Duration;
 import java.util.Map;
@@ -18,6 +19,9 @@ import java.util.Map;
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
+
+    @Value("${cookie.secure:false}")
+    private boolean cookieSecure;
 
     @Autowired
     private AuthService authService;
@@ -38,7 +42,7 @@ public class AuthController {
         
         ResponseCookie cookie = ResponseCookie.from("token", token)
             .httpOnly(true)
-            .secure(false)
+            .secure(cookieSecure)
             .sameSite("Lax")
             .path("/")
             .maxAge(Duration.ofDays(1))
@@ -54,7 +58,7 @@ public class AuthController {
     public ResponseEntity<?> logout(HttpServletResponse response) {
         ResponseCookie cookie = ResponseCookie.from("token", "")
             .httpOnly(true)
-            .secure(false)
+            .secure(cookieSecure)
             .sameSite("Lax")
             .path("/")
             //esto borra la cookie direct
