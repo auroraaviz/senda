@@ -9,8 +9,8 @@ el progreso general se calcula solo, ponderado por el peso de cada fase.
 > ⏳ El backend y la base de datos están en planes gratuitos que se "duermen" por inactividad.
 > La primera carga puede tardar uno o dos minutos. Después va con normalidad.
 
-![Listado de proyectos](docs/home.png) 
-![Detalle de proyecto con fases](docs/detalle.png) 
+![Listado de proyectos](docs/home.png)
+![Detalle de proyecto con fases](docs/detalle.png)
 
 ---
 
