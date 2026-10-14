@@ -11,7 +11,7 @@ el progreso general se calcula solo, ponderado por el peso de cada fase.
 Puedes entrar sin registrarte:
 
 - **Usuario:** `demo`
-- **Contraseña:** `TU_CONTRASEÑA_DEMO`
+- **Contraseña:** `Demo-Senda-2026`
 
 > Los datos de la demo son compartidos: cualquiera puede modificarlos o borrarlos.
 
