@@ -6,8 +6,14 @@ el progreso general se calcula solo, ponderado por el peso de cada fase.
 
 🔗 **Demo en producción:** [senda-chi.vercel.app](https://senda-chi.vercel.app)
 
-> ⏳ El backend y la base de datos están en planes gratuitos que se "duermen" por inactividad.
-> La primera carga puede tardar uno o dos minutos. Después va con normalidad.
+## Probar la demo
+
+Puedes entrar sin registrarte:
+
+- **Usuario:** `demo`
+- **Contraseña:** `TU_CONTRASEÑA_DEMO`
+
+> Los datos de la demo son compartidos: cualquiera puede modificarlos o borrarlos.
 
 ![Listado de proyectos](docs/home.png)
 ![Detalle de proyecto con fases](docs/detalle.png)
