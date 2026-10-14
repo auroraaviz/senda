@@ -39,7 +39,7 @@ export default function EditPhasePanel({
                 orderNumber: phase.orderNumber,
                 progress: phase.progress,
                 weight,
-                dueDate,
+                dueDate: dueDate || null,
             });
             setIsEditing(false);
             router.refresh();

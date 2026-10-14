@@ -49,6 +49,8 @@ public class PhaseService {
         existingPhase.setName(updatedPhase.getName());
         existingPhase.setOrderNumber(updatedPhase.getOrderNumber());
         existingPhase.setProgress(updatedPhase.getProgress());
+        existingPhase.setWeight(updatedPhase.getWeight());
+        existingPhase.setDueDate(updatedPhase.getDueDate());
 
         Phase savedPhase = phaseRepository.save(existingPhase);
 
