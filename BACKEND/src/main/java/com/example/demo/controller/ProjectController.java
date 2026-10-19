@@ -8,6 +8,7 @@ import com.example.demo.service.ProjectService;
 import com.example.demo.model.ProjectSize;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.Authentication;
 import lombok.RequiredArgsConstructor;
 import com.example.demo.model.ProjectSize;
 import java.util.List;
@@ -20,21 +21,19 @@ public class ProjectController {
     private final ProjectService projectService;
 
     @GetMapping("/{id}")
-    public ProjectDTO getProjectById(@PathVariable Long id) {
-        Project project = projectService.getProjectById(id);
-        return ProjectMapper.toDTO(project);
+    public ProjectDTO getProjectById(@PathVariable Long id, Authentication authentication) {
+        return ProjectMapper.toDTO(projectService.getProjectById(id, authentication.getName()));
     }
 
     @GetMapping
-    public List<ProjectDTO> getAllProjects() {
-        List<Project> projects = projectService.getAllProjects();
-        return projects.stream()
+    public List<ProjectDTO> getAllProjects(Authentication authentication) {
+        return projectService.getAllProjects(authentication.getName()).stream()
             .map(ProjectMapper::toDTO)
             .toList();
     }
 
     @PostMapping
-    public ProjectDTO createProject(@Valid @RequestBody ProjectDTO projectDTO) {
+    public ProjectDTO createProject(@Valid @RequestBody ProjectDTO projectDTO, Authentication authentication) {
 
         ProjectSize sizeEnum;
         try {
@@ -52,7 +51,7 @@ public class ProjectController {
                 .status(ProjectStatus.PLANNED)
                 .build();
 
-        Project savedProject = projectService.createProject(project);
+        Project savedProject = projectService.createProject(project, authentication.getName());
 
         return ProjectDTO.builder()
                 .id(savedProject.getId())
@@ -77,17 +76,10 @@ public class ProjectController {
                 .build();
     }
 
-    @PostMapping("/demo")
-    public Project demoProject() {
-        Project project = new Project();
-        project.setTitle("Proyecto Demo");
-        project.setSize(ProjectSize.MEDIUM);
-        return projectService.createProject(project);
-    }
-
     @PutMapping("/{id}")
     public ProjectDTO updateProject(@PathVariable Long id,
-                                 @Valid @RequestBody ProjectDTO dto) {
+                                 @Valid @RequestBody ProjectDTO dto,
+                                 Authentication authentication) {
 
         ProjectSize sizeEnum = ProjectSize.valueOf(dto.getSize().toUpperCase());
 
@@ -98,14 +90,14 @@ public class ProjectController {
                 .endDate(dto.getEndDate())
                 .build();
 
-        Project saved = projectService.updateProject(id, updateProject);
+        Project saved = projectService.updateProject(id, updateProject, authentication.getName());
 
         return ProjectMapper.toDTO(saved);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteProject(@PathVariable Long id) {
-        projectService.deleteProject(id);
+    public void deleteProject(@PathVariable Long id, Authentication authentication) {
+        projectService.deleteProject(id, authentication.getName());
     }
 }
 

@@ -17,9 +17,25 @@ public class PhaseService {
     private final ProjectRepository projectRepository;
     private final ProjectService projectService;
 
-    public Phase createPhase(Long projectId, Phase phase) {
-        Project project = projectRepository.findById(projectId)
-                .orElseThrow(() -> new NotFoundException("Project not found"));
+    private Project getOwnedProject(Long projectId, String username) {
+        return projectRepository.findByIdAndUserUsername(projectId, username)
+            .orElseThrow(() -> new NotFoundException("Project not found"));
+    }
+
+        private Phase getOwnedPhase(Long projectId, Long phaseId, String username) {
+            getOwnedProject(projectId, username); // valida que el proyecto es del usuario
+
+        Phase phase = phaseRepository.findById(phaseId) 
+            .orElseThrow(() -> new NotFoundException("Phase not found"));
+
+        if (!phase.getProject().getId().equals(projectId)) {
+            throw new NotFoundException("Phase not found");
+        }
+        return phase;
+        }
+
+    public Phase createPhase(Long projectId, Phase phase, String username) {
+        Project project = getOwnedProject(projectId, username);
 
         phase.setProject(project);
         Phase savedPhase = phaseRepository.save(phase);
@@ -29,22 +45,13 @@ public class PhaseService {
         return savedPhase;
     }
 
-    public List<Phase> getPhasesByProject(Long projectId) {
-        Project project = projectRepository.findById(projectId)
-                .orElseThrow(() -> new RuntimeException("Project not found"));
-
-        return project.getPhases();
+    public List<Phase> getPhasesByProject(Long projectId, String username) {
+        return getOwnedProject(projectId, username).getPhases();
     }
 
+    public Phase updatePhase(Long projectId, Long phaseId, Phase updatedPhase, String username) {
 
-    public Phase updatePhase(Long projectId, Long phaseId, Phase updatedPhase) {
-
-        Phase existingPhase = phaseRepository.findById(phaseId)
-                .orElseThrow(() -> new RuntimeException("Phase not found"));
-
-        if (!existingPhase.getProject().getId().equals(projectId)) {
-            throw new RuntimeException("Phase does not belong to this project");
-        }
+        Phase existingPhase = getOwnedPhase(projectId, phaseId, username);
 
         existingPhase.setName(updatedPhase.getName());
         existingPhase.setOrderNumber(updatedPhase.getOrderNumber());
@@ -59,15 +66,9 @@ public class PhaseService {
         return savedPhase;
     }
 
-    public void deletePhase(Long projectId, Long phaseId) {
+    public void deletePhase(Long projectId, Long phaseId, String username) {
 
-        Phase existingPhase = phaseRepository.findById(phaseId)
-                .orElseThrow(() -> new NotFoundException("Phase not found"));
-
-        if (!existingPhase.getProject().getId().equals(projectId)) {
-            throw new RuntimeException("Phase does not belong to this project");
-        }
-
+        Phase existingPhase = getOwnedPhase(projectId, phaseId, username);
         Project project = existingPhase.getProject();
 
         phaseRepository.delete(existingPhase);

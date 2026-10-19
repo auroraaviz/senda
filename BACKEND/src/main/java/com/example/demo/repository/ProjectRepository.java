@@ -3,5 +3,10 @@ package com.example.demo.repository;
 import com.example.demo.model.Project;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface ProjectRepository extends JpaRepository <Project, Long> {
+import java.util.List;
+import java.util.Optional;
+
+public interface ProjectRepository extends JpaRepository<Project, Long> {
+    List<Project> findByUserUsername(String username);
+    Optional<Project> findByIdAndUserUsername(Long id, String username);
 }

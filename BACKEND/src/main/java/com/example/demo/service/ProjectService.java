@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 import com.example.demo.model.Phase;
 import lombok.RequiredArgsConstructor;
 import com.example.demo.exception.NotFoundException;
+import com.example.demo.model.User;
+import com.example.demo.repository.UserRepository;
 
 import java.util.List;
 
@@ -15,18 +17,26 @@ import java.util.List;
 public class ProjectService {
 
     private final ProjectRepository projectRepository;
+    private final UserRepository userRepository;
 
-    public Project createProject (Project project) {
+    public Project createProject (Project project, String username) {
+        User user = userRepository.findByUsername(username)
+            .orElseThrow(() -> new NotFoundException("User not found"));
+            project.setUser(user);
         return projectRepository.save(project);
     }
 
-    public List <Project> getAllProjects() {
-        return projectRepository.findAll();
+    public List <Project> getAllProjects(String username) {
+        return projectRepository.findByUserUsername(username);
     }
 
-    public Project updateProject(Long id, Project updatedProject) {
-        Project existingProject = projectRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Project not found"));
+    public Project getProjectById(Long id, String username) {
+        return projectRepository.findByIdAndUserUsername (id, username)
+            .orElseThrow(() -> new NotFoundException("Project not found"));
+    }
+
+    public Project updateProject(Long id, Project updatedProject, String username) {
+        Project existingProject = getProjectById(id, username);
 
         existingProject.setTitle(updatedProject.getTitle());
         existingProject.setSize(updatedProject.getSize());
@@ -36,12 +46,11 @@ public class ProjectService {
         return projectRepository.save(existingProject);
     }
 
-    public void deleteProject(Long id) {
-        if (!projectRepository.existsById(id)) {
-            throw new RuntimeException("Project not found");
+    public void deleteProject(Long id, String username) {
+        Project project = getProjectById(id, username);
+        projectRepository.delete(project);
         }
-        projectRepository.deleteById(id);
-    }
+        
 
     public void updateProjectProgress(Project project) {
 

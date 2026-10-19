@@ -7,6 +7,8 @@ import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.util.List;
 import jakarta.validation.constraints.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 
 @Getter
 @Setter
@@ -16,6 +18,11 @@ import jakarta.validation.constraints.*;
 @Builder
 
 public class Project {
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    @JsonIgnore
+    private User user; 
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

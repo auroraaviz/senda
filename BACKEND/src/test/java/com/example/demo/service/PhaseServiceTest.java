@@ -30,7 +30,6 @@ public class PhaseServiceTest {
         projectService = mock(ProjectService.class);
         phaseService = new PhaseService(phaseRepository, projectRepository, projectService);
 
-
         when(phaseRepository.save(any())).thenAnswer(inv -> inv.getArgument(0));
     }
 
@@ -39,7 +38,8 @@ public class PhaseServiceTest {
 
         // GIVEN
         Project project = Project.builder().phases(List.of()).build();
-        when(projectRepository.findById(1L)).thenReturn(Optional.of(project));
+        when(projectRepository.findByIdAndUserUsername(1L, "ana"))
+                .thenReturn(Optional.of(project));
 
         Phase phase = Phase.builder()
                 .progress(50)
@@ -47,7 +47,7 @@ public class PhaseServiceTest {
                 .build();
 
         // WHEN
-        Phase savedPhase = phaseService.createPhase(1L, phase);
+        Phase savedPhase = phaseService.createPhase(1L, phase, "ana");
 
         // THEN
         assertNotNull(savedPhase);
@@ -58,13 +58,48 @@ public class PhaseServiceTest {
 
     @Test
     void creatingPhaseInNonExistentProjectThrowsException() {
+        
         // GIVEN
-        when(projectRepository.findById(99L)).thenReturn(Optional.empty());
+        when(projectRepository.findByIdAndUserUsername(99L, "ana"))
+                .thenReturn(Optional.empty());
         Phase phase = Phase.builder().build();
 
         // WHEN + THEN
         assertThrows(NotFoundException.class, () -> {
-            phaseService.createPhase(99L, phase);
+            phaseService.createPhase(99L, phase, "ana");
         });
+    }
+
+    @Test
+    void cannotCreatePhaseInProjectOfAnotherUser() {
+
+        //GIVEN: el proyecto 1 es de ana, así que para luis no existe
+        when(projectRepository.findByIdAndUserUsername(1L, "luis"))
+            .thenReturn(Optional.empty());
+        Phase phase = Phase.builder().build();
+
+        // WHEN + THEN
+        assertThrows(NotFoundException.class, () -> {
+            phaseService.createPhase(1L, phase, "luis");
+        });
+
+        verify(phaseRepository, never()).save(any());
+    }
+
+    @Test
+    void cannotUpdatePhaseOfAnotherUser() {
+
+        //GIVEN
+        when(projectRepository.findByIdAndUserUsername(1L, "luis"))
+            .thenReturn(Optional.empty());
+
+        Phase updated = Phase.builder().name("Hackeada").build();
+
+        //WHEN + THEN
+            assertThrows(NotFoundException.class, () -> {
+                phaseService.updatePhase(1L, 5L, updated, "luis");
+            });
+
+            verify(phaseRepository,never()).save(any());
     }
 }
