@@ -13,8 +13,6 @@ Puedes entrar sin registrarte:
 - **Usuario:** `demo`
 - **Contraseña:** `Demo-Senda-2026`
 
-> Los datos de la demo son compartidos: cualquiera puede modificarlos o borrarlos.
-
 ![Listado de proyectos](docs/home.png)
 ![Detalle de proyecto con fases](docs/detalle.png)
 
