@@ -41,14 +41,15 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center px-4">
       <div className="w-full max-w-md">
         <div className="mb-8 text-center">
-          <div className="inline-flex items-center gap-2 mb-2">
-            <span className="w-2 h-2 rounded-full bg-primary" />
-            <span className="w-2 h-2 rounded-full bg-secondary" />
-            <span className="w-2 h-2 rounded-full bg-primary-dark" />
+          <img src="/favicon.ico" alt="" className="mx-auto h-14 w-14 rounded-xl" />
+          <div className="my-4 inline-flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-primary" />
+              <span className="w-2 h-2 rounded-full bg-secondary" />
+              <span className="w-2 h-2 rounded-full bg-primary-dark" />
           </div>
-          <h1 className="text-4xl font-display font-semibold text-ink"> Senda </h1>
-          <p className="text-sm text-ink-soft mt-2"> Retoma el camino </p>
-        </div>
+            <h1 className="text-4xl font-display font-semibold text-ink"> Senda </h1>
+            <p className="text-sm text-ink-soft mt-2"> Retoma el camino </p>
+          </div>
 
         <form
           onSubmit={handleSubmit}

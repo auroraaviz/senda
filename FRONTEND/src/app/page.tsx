@@ -55,10 +55,13 @@ export default async function Home() {
   return (
     <main className="min-h-screen px-6 py-10 md:px-12">
       <div className="mx-auto max-w-6xl">
-        <div className="mb.12 flex flex-wrap items-center justify-between gap-4">
+        <div className="mb-12 flex flex-wrap items-center justify-between gap-4">
           <div>
-            <h1 className="font-display text-4xl font-bold text-ink md:text-5xl"> Senda </h1>
-            <p className="mt-2 text-base text-ink-soft"> Tus proyectos en curso </p>
+          <div className="flex items-center gap-3">
+              <img src="/favicon.ico" alt="" className="h-12 w-12 rounded-xl" />
+              <h1 className="font-display text-4xl font-bold text-ink">Senda</h1>
+            </div>
+              <p className="mt-2 text-base text-ink-soft">Tus proyectos en curso</p>
           </div>
           <div className="flex items-center gap-3">
             <Link
