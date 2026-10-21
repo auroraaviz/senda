@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import LogoutButton from "@/components/LogoutButton";
 import StatusBadge from "@/components/StatusBadge";
 import DeleteProjectButton from "@/components/DeleteProjectButton"; 
+import ProjectsSummary from "@/components/ProjectsSummary";
 import Link from "next/link";
 
 interface Project {
@@ -68,6 +69,8 @@ export default async function Home() {
               <LogoutButton />
           </div>
         </div>
+
+        <ProjectsSummary projects={projects} />
 
         {projects.length === 0 ? (
           <div className="rounded-card border border-dashed border-border bg-surface/60 py-20 text-center">
