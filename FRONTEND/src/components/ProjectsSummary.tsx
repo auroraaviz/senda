@@ -1,3 +1,7 @@
+"use client";
+
+import { useEffect, useState } from "react"; 
+
 interface Props {
     projects: { progress: number; status?: string }[];
 }
@@ -14,6 +18,29 @@ const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
 
 export default function ProjectsSummary({ projects }: Props) {
     const total = projects.length;
+    const [k, setK] = useState(0);
+
+    useEffect(() => {
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        setK(1);
+        return;
+      }
+
+      const duration = 900;
+      const start = performance.now();
+      let frame = 0;
+
+      function tick(now: number) {
+        const ratio = Math.min((now - start) / duration, 1);
+        setK(1 - Math.pow(1 - ratio, 3));
+        if (ratio < 1) frame = requestAnimationFrame(tick);
+      }
+
+      frame = requestAnimationFrame(tick);
+      return () => cancelAnimationFrame(frame);
+
+    }, []);
+    
     if (total === 0) return null;
 
     const average = Math.round(
@@ -44,7 +71,7 @@ export default function ProjectsSummary({ projects }: Props) {
     let offset = 0;
 
     const segments = entries.map((entry) => {
-        const length = (entry.count / total) * CIRCUMFERENCE;
+        const length = (entry.count / total) * CIRCUMFERENCE * k;
         const segment = { ...entry, length, offset };
         offset += length;
         return segment;
@@ -62,7 +89,7 @@ export default function ProjectsSummary({ projects }: Props) {
           Progreso medio
         </p>
         <p className="mt-1 font-mono text-6xl font-medium leading-none text-ink">
-          {average}
+          {Math.round(average * k)}
           <span className="text-3xl text-ink-soft">%</span>
         </p>
         <p className="mt-2 text-sm text-ink-soft">
