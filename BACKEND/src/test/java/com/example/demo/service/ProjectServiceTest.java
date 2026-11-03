@@ -1,5 +1,5 @@
 package com.example.demo.service;
-
+ 
 import com.example.demo.exception.NotFoundException;
 import com.example.demo.model.Phase;
 import com.example.demo.model.Project;
@@ -7,164 +7,212 @@ import com.example.demo.model.ProjectStatus;
 import com.example.demo.model.User;
 import com.example.demo.repository.ProjectRepository;
 import com.example.demo.repository.UserRepository;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+ 
 import java.time.LocalDate;
-import java.util.List;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Optional;
-
+ 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+@ExtendWith(MockitoExtension.class)
+class ProjectServiceTest {
 
-public class ProjectServiceTest {
-
+    @Mock
     private ProjectRepository projectRepository;
+    @Mock
     private UserRepository userRepository;
+    @InjectMocks
     private ProjectService projectService;
 
-    @BeforeEach
-    void setUp() {
-        projectRepository = mock(ProjectRepository.class);
-        userRepository = mock(UserRepository.class);
-        when(projectRepository.save(any())).thenAnswer(inv -> inv.getArgument(0));
-        projectService = new ProjectService(projectRepository, userRepository);
+    private Phase phase(int progress, int weight, LocalDate dueDate) {
+        return Phase.builder()
+                .name("Fase")
+                .orderNumber(1)
+                .progress(progress)
+                .weight(weight)
+                .dueDate(dueDate)
+                .build();
     }
 
-    @Test
-    void CalculateWeighted() {
-
-        //GIVEN
-        Phase phase1 = Phase.builder()
-                .progress(50)
-                .weight(50)
+    private Project projectWith(Phase... phases) {
+        return Project.builder()
+                .title("Proyecto de prueba")
+                .phases(new ArrayList<>(Arrays.asList(phases)))
                 .build();
-
-        Phase phase2 = Phase.builder()
-                .progress(100)
-                .weight(50)
-                .build();
-
-        Project project = Project.builder()
-                .phases(List.of(phase1, phase2))
-                .build();
-
-        //WHEN
-        projectService.updateProjectProgress(project);
-
-        //THEN
-        assertEquals(75, project.getProgress());
     }
 
+    //progreso ponderado
     @Test
-    void  progressCero() {
+    void updateProjectProgress_sinFases_progresoCeroYPlanificado() {
+        Project project = projectWith();
 
-        //GIVEN
-        Project project = Project.builder()
-                .phases(List.of())
-                .build();
-
-        //WHEN
         projectService.updateProjectProgress(project);
 
-        //then
+        assertEquals(0, project.getProgress());
+        assertEquals(ProjectStatus.PLANNED, project.getStatus());
+        verify(projectRepository).save(project);
+    }     
+
+    @Test
+    void updateProjectProgress_listaDeFasesNula_progresoCeroYPlanificado() {
+        Project project = Project.builder().title("Sin lista de fases").build();
+
+        projectService.updateProjectProgress(project);
+
         assertEquals(0, project.getProgress());
         assertEquals(ProjectStatus.PLANNED, project.getStatus());
     }
 
     @Test
-    void progress100() {
+    void updateProjectProgress_unaFase_elProgresoEsElDeLaFase() {
+        Project project = projectWith(phase(40, 5, null));
 
-        //GIVEN
-        Phase phase1 = Phase.builder()
-                .progress(100)
-                .weight(50)
-                .build();
-
-        Phase phase2 = Phase.builder()
-                .progress(100)
-                .weight(50)
-                .build();
-
-        Project project = Project.builder()
-                .phases(List.of(phase1, phase2))
-                .build();
-
-        //WHEN
         projectService.updateProjectProgress(project);
 
-        //THEN
+        assertEquals(40, project.getProgress());
+        assertEquals(ProjectStatus.IN_PROGRESS, project.getStatus());
+    }
+
+     @Test
+    void updateProjectProgress_variasFasesConPesosDistintos_pesaCadaFase() {
+        // (100*1 + 0*3) / 4 = 25. Una media simple daria 50
+        Project project = projectWith(
+                phase(100, 1, null),
+                phase(0, 3, null));
+ 
+        projectService.updateProjectProgress(project);
+ 
+        assertEquals(25, project.getProgress());
+        assertEquals(ProjectStatus.IN_PROGRESS, project.getStatus());
+    }
+ 
+    @Test
+    void updateProjectProgress_redondeaHaciaAbajo_nuncaMarcaCompletadoSinTerminar() {
+        // (100 + 100 + 99) / 3 = 99,67 -> 99 por la division entera
+        Project project = projectWith(
+                phase(100, 1, null),
+                phase(100, 1, null),
+                phase(99, 1, null));
+ 
+        projectService.updateProjectProgress(project);
+ 
+        assertEquals(99, project.getProgress());
+        assertEquals(ProjectStatus.IN_PROGRESS, project.getStatus());
+    }
+ 
+    @Test
+    void updateProjectProgress_pesoTotalCero_progresoCeroSinDividirPorCero() {
+        // la validacion @Min(1) lo impide en la API, pero la rama defensiva existe
+        Project project = projectWith(phase(80, 0, null));
+ 
+        projectService.updateProjectProgress(project);
+ 
+        assertEquals(0, project.getProgress());
+        assertEquals(ProjectStatus.PLANNED, project.getStatus());
+    }
+ 
+    // ---------- estado del proyecto ----------
+ 
+    @Test
+    void updateProjectProgress_todasLasFasesAl100_completado() {
+        Project project = projectWith(
+                phase(100, 2, null),
+                phase(100, 3, null));
+ 
+        projectService.updateProjectProgress(project);
+ 
         assertEquals(100, project.getProgress());
         assertEquals(ProjectStatus.COMPLETED, project.getStatus());
     }
-
+ 
     @Test
-    void progressDue() {
-
-        // GIVEN
-        Phase phase1 = Phase.builder()
-                .progress(50)
-                .weight(100)
-                .dueDate(LocalDate.now().minusDays(1)) // fecha pasada
-                .build();
-
-        Project project = Project.builder()
-                .phases(List.of(phase1))
-                .build();
-
-        //WHEN
+    void updateProjectProgress_unaFaseRetrasada_proyectoRetrasado() {
+        Project project = projectWith(
+                phase(50, 1, LocalDate.now().minusDays(1)),
+                phase(100, 1, null));
+ 
         projectService.updateProjectProgress(project);
-
-        //THEN
+ 
+        assertEquals(75, project.getProgress());
         assertEquals(ProjectStatus.DELAYED, project.getStatus());
     }
-
+ 
     @Test
-    void shouldThrowExceptionWhenProjectNotFound() {
-
-        // GIVEN
-        when(projectRepository.findByIdAndUserUsername(99L, "ana"))
-                .thenReturn(Optional.empty());
-
-        // WHEN + THEN
-        assertThrows(RuntimeException.class, () -> {
-            projectService.getProjectById(99L, "ana");
-        });
+    void updateProjectProgress_retrasoTienePrioridadSobreElProgreso() {
+        // 91% de progreso, pero una fase vencida sin terminar
+        Project project = projectWith(
+                phase(90, 9, LocalDate.now().minusDays(1)),
+                phase(100, 1, null));
+ 
+        projectService.updateProjectProgress(project);
+ 
+        assertEquals(91, project.getProgress());
+        assertEquals(ProjectStatus.DELAYED, project.getStatus());
     }
-
+ 
     @Test
-    void shouldAssingProjectToAuthenticatedUser() {
-
-        //GIVEN
-        User ana = new User("ana", "hash");
-        when(userRepository.findByUsername("ana")).thenReturn(Optional.of(ana));
-
-        Project project = Project.builder()
-                .title("Mi proyecto")
-                .build();
-
-        // WHEN
+    void updateProjectProgress_faseVencidaPeroCompletada_noRetrasa() {
+        Project project = projectWith(phase(100, 1, LocalDate.now().minusDays(10)));
+ 
+        projectService.updateProjectProgress(project);
+ 
+        assertEquals(ProjectStatus.COMPLETED, project.getStatus());
+    }
+ 
+    // ---------- aislamiento de datos por usuario ----------
+ 
+    @Test
+    void createProject_asignaElUsuarioAutenticadoComoDueno() {
+        User user = mock(User.class);
+        Project project = Project.builder().title("Tesis").build();
+        when(userRepository.findByUsername("ana")).thenReturn(Optional.of(user));
+        when(projectRepository.save(any(Project.class))).thenAnswer(inv -> inv.getArgument(0));
+ 
         Project saved = projectService.createProject(project, "ana");
-
-        // THEN
-        assertEquals(ana, saved.getUser());
+ 
+        assertSame(user, saved.getUser());
     }
-
+ 
     @Test
-    void shouldNotReturnProjectOfAnotherUser() {
-
-        //GIVEN: el proyecto 1 es de ana, así que para Luis no debe existir
-        when(projectRepository.findByIdAndUserUsername(1L, "luis"))
-                .thenReturn(Optional.empty());
-
-        //WHEN + THEN
-        assertThrows(NotFoundException.class, () -> {
-                projectService.getProjectById(1L, "luis");
-        });
+    void createProject_usuarioInexistente_lanzaNotFoundYNoGuarda() {
+        Project project = Project.builder().title("Tesis").build();
+        when(userRepository.findByUsername("nadie")).thenReturn(Optional.empty());
+ 
+        assertThrows(NotFoundException.class,
+                () -> projectService.createProject(project, "nadie"));
+ 
+        verify(projectRepository, never()).save(any(Project.class));
     }
+ 
+    @Test
+    void getProjectById_proyectoDelUsuario_lodevuelve() {
+        Project project = Project.builder().title("Mio").build();
+        when(projectRepository.findByIdAndUserUsername(7L, "ana")).thenReturn(Optional.of(project));
+ 
+        Project found = projectService.getProjectById(7L, "ana");
+ 
+        assertSame(project, found);
     }
-
+ 
+    @Test
+    void getProjectById_proyectoDeOtroUsuario_lanzaNotFound() {
+        // el repositorio filtra por id Y usuario: un intruso no encuentra nada
+        when(projectRepository.findByIdAndUserUsername(7L, "intruso")).thenReturn(Optional.empty());
+ 
+        assertThrows(NotFoundException.class,
+                () -> projectService.getProjectById(7L, "intruso"));
+    }
+}
