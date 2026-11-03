@@ -101,8 +101,4 @@ public class ProjectService {
         }
     }
 
-    public Project getProjectById(Long id) {
-        return projectRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Project not found"));
-    }
 }
