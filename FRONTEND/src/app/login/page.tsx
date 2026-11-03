@@ -24,8 +24,12 @@ export default function LoginPage() {
         body: JSON.stringify({ username, password }),
       });
 
-      if (!res.ok) {
+
+      if (res.status === 401 || res.status === 403) {
         throw new Error("Usuario o contraseña incorrectos");
+      }
+      if (!res.ok) {
+        throw new Error("No se ha podido conectar con el servidor. Inténtalo de nuevo.");
       }
 
       // El token ya viaja en una cookie httpOnly, no hace falta leerlo aquí
