@@ -120,21 +120,21 @@ BACKEND_URL=http://localhost:8080
 ---
 
 ## Tests
-El backend tiene 29 tests con JUnit 5 y Mockito. Cubren el cálculo del progreso ponderado, el estado del proyecto, la detección de fases retrasadas y el aislamiento de datos entre usuarios.
+
+**Backend:** 29 tests con JUnit 5 y Mockito. Cubren el cálculo del progreso ponderado, el estado del proyecto, la detección de fases retrasadas y el aislamiento de datos entre usuarios. Se ejecutan sin base de datos externa: 28 son tests unitarios y el de arranque de Spring usa H2 en memoria.
 
 ```
 cd BACKEND
 ./mvnw test     # en Windows: .\mvnw test
 ```
 
-28 son tests unitarios que no necesitan base de datos. El restante (`OrganizadorProyectosApplicationTests`) arranca Spring completo, así que necesita MySQL local encendido.
-
-El frontend tiene 6 tests con Vitest y Testing Library para el listado de proyectos: filtros por estado, contadores y los tres criterios de orden.
+**Frontend:** 6 tests con Vitest y Testing Library para el listado de proyectos: filtros por estado, contadores y los tres criterios de orden.
 
 ```
 cd FRONTEND
 npm test
 ```
+
 ---
 
 ## Próximos pasos
