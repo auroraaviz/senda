@@ -129,6 +129,12 @@ cd BACKEND
 
 28 son tests unitarios que no necesitan base de datos. El restante (`OrganizadorProyectosApplicationTests`) arranca Spring completo, así que necesita MySQL local encendido.
 
+El frontend tiene 6 tests con Vitest y Testing Library para el listado de proyectos: filtros por estado, contadores y los tres criterios de orden.
+
+```
+cd FRONTEND
+npm test
+```
 ---
 
 ## Próximos pasos
