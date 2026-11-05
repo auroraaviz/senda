@@ -1,5 +1,7 @@
 # 🌿 Senda — Organizador de proyectos académicos
 
+![CI](https://github.com/auroraaviz/senda/actions/workflows/ci.yml/badge.svg)
+
 Aplicación web fullstack para organizar proyectos del ámbito académico. Cada proyecto se divide en fases y el progreso general se calcula solo, ponderado por el peso de cada fase.
 
 🔗 **Demo en producción:** [senda-chi.vercel.app](https://senda-chi.vercel.app)
@@ -142,7 +144,7 @@ npm test
 - [x] Dashboard con estadísticas y filtro por estado
 - [x] Logo e identidad de marca
 - [x] Tests automatizados del backend
-- [ ] Tests de integración con base de datos en memoria (H2)
+- [x] Tests de integración con base de datos en memoria (H2)
 - [ ] Sidebar, calendario y gráficas
 
 ---
