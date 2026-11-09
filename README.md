@@ -139,15 +139,6 @@ npm test
 
 ---
 
-## Próximos pasos
-
-- [x] Dashboard con estadísticas y filtro por estado
-- [x] Logo e identidad de marca
-- [x] Tests automatizados del backend
-- [x] Tests de integración con base de datos en memoria (H2)
-- [ ] Sidebar, calendario y gráficas
-
----
 
 ## Dónde encontrarme
 
