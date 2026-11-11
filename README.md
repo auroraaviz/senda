@@ -16,6 +16,7 @@ Puedes entrar sin registrarte:
 
 ![Listado de proyectos](docs/home.png)
 ![Detalle de proyecto con fases](docs/detalle.png)
+![Calendario con fechas de fases](docs/calendario.png)
 
 ---
 
@@ -130,7 +131,7 @@ cd BACKEND
 ./mvnw test     # en Windows: .\mvnw test
 ```
 
-**Frontend:** 6 tests con Vitest y Testing Library para el listado de proyectos: filtros por estado, contadores y los tres criterios de orden.
+**Frontend:** 14 tests con Vitest y Testing Library: listado de proyectos (filtros por estado, contadores y los tres criterios de orden) y lógica del calendario (fases retrasadas, fases sin fecha y cuadrícula mensual).
 
 ```
 cd FRONTEND
