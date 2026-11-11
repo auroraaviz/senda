@@ -31,6 +31,7 @@ Puedes entrar sin registrarte:
 - Cada usuario ve y gestiona solo sus proyectos (aislamiento de datos, comprobado también en las fases)
 - Resumen con el progreso medio y un gráfico de proyectos por estado
 - Filtro por estado y orden por progreso, fecha de entrega o título
+- Calendario mensual con las fechas límite de las fases; las retrasadas se marcan en otro color
 
 ---
 
@@ -131,7 +132,7 @@ cd BACKEND
 ./mvnw test     # en Windows: .\mvnw test
 ```
 
-**Frontend:** 14 tests con Vitest y Testing Library: listado de proyectos (filtros por estado, contadores y los tres criterios de orden) y lógica del calendario (fases retrasadas, fases sin fecha y cuadrícula mensual).
+**Frontend:** 17 tests con Vitest y Testing Library: listado de proyectos (filtros por estado, contadores y los tres criterios de orden), lógica del calendario (fases retrasadas, fases sin fecha y cuadrícula mensual) y formateo de fechas.
 
 ```
 cd FRONTEND
