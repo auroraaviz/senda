@@ -6,7 +6,7 @@ import PhaseProgressControl from "@/components/PhaseProgressControl";
 import EditProjectPanel from "@/components/EditProjectPanel";
 import DeletePhaseButton from "@/components/DeletePhaseButton"; 
 import EditPhasePanel from "@/components/EditPhasePanel";
-
+import { formatDate } from "@/lib/dates";
 
 interface Project {
     id: number;
@@ -16,7 +16,7 @@ interface Project {
     endDate: string | null;
     progress: number;
     status?: "PLANNED" | "IN_PROGRESS" | "COMPLETED" | "DELAYED";
-} 
+}  
 
 interface Phase { 
     id: number;
@@ -61,15 +61,6 @@ async function getPhases(id: string): Promise<Phase[]> {
         throw new Error("Error al cargar las fases");
     }
     return res.json();
-}
-
-function formatDate(date: string | null): string {
-    if (!date) return "Sin fecha límite";
-    return new Date(`${date.slice(0, 10)}T00:00:00`).toLocaleDateString("es-ES", {
-        day: "numeric",
-        month: "short",
-        year: "numeric",
-    });
 }
 
 export default async function ProjectDetailPage({
@@ -144,7 +135,7 @@ export default async function ProjectDetailPage({
                                                             overdue ? "text-oxido" : "text-ink"
                                                         }`}
                                                         >
-                                                            {formatDate(phase.dueDate)}
+                                                            {formatDate(phase.dueDate, "Sin fecha límite")}
                                                         </span>
                                                 </span>
                                             </p>

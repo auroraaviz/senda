@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { api } from "@/lib/api";
 import DeleteProjectButton from "./DeleteProjectButton";
 import StatusBadge from "./StatusBadge";
+import { formatDate } from "@/lib/dates";
 
 interface Project {
     id: number;
@@ -21,15 +22,6 @@ const sizeLabels: Record<Project["size"], string> = {
     MEDIUM: "Mediano",
     LARGE: "Grande",
 };
-
-function formatDate(date: string | null): string {
-    if (!date) return "Sin fecha";
-    return new Date(`${date.slice(0, 10)}T00:00:00`).toLocaleDateString("es-ES", {
-        day: "numeric",
-        month: "short",
-        year: "numeric",
-    });
-}
 
 function barColorFor(status?: string): string {
     if (status === "COMPLETED") return "bg-secondary";

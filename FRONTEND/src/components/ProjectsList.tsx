@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import StatusBadge from "@/components/StatusBadge";
 import DeleteProjectButton from "@/components/DeleteProjectButton";
+import { formatDate } from "@/lib/dates";
 
 interface Project {
   id: number;
@@ -42,15 +43,6 @@ function barColorFor(status?: string): string {
   if (status === "COMPLETED") return "bg-secondary";
   if (status === "DELAYED") return "bg-oxido";
   return "bg-accent";
-}
-
-function formatDate(date: string | null): string {
-  if (!date) return "Sin fecha";
-  return new Date(`${date.slice(0, 10)}T00:00:00`).toLocaleDateString("es-ES", {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-  });
 }
 
 function sortProjects(list: Project[], sort: SortKey): Project[] {

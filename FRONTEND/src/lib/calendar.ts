@@ -1,4 +1,5 @@
 import type { Project } from "./api";   
+import { formatDate } from "@/lib/dates";
 
 export interface CalendarEvent {
     phaseId: number;
@@ -48,9 +49,4 @@ export function buildMonthGrid(year: number, month: number): (string | null)[] {
     }
     while (cells.length % 7 !== 0) cells.push(null);
     return cells; 
-}
-
-export function formatDate(iso: string): string {
-  const [y, m, d] = iso.split("-");
-  return `${d}/${m}/${y}`;
 }
