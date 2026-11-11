@@ -4,40 +4,11 @@ import LogoutButton from "@/components/LogoutButton";
 import ProjectsSummary from "@/components/ProjectsSummary";
 import ProjectsList from "@/components/ProjectsList";
 import Link from "next/link";
-
-interface Project {
-  id: number;
-  title: string;
-  size: "SMALL" | "MEDIUM" | "LARGE";
-  startDate: string | null;
-  endDate: string | null;
-  progress: number;
-  status?: string;
-  phases: unknown[];
-}
-
-async function getProjects(): Promise<Project[]> {
-  const cookieStore = await cookies();
-  const token = cookieStore.get("token");
-
-  const res = await fetch(`${process.env.BACKEND_URL}/projects`, {
-    headers: token ? { Cookie: `token=${token.value}` } : {},
-    cache: "no-store",
-  });
-
-  if (res.status === 401 || res.status === 403) {
-    redirect("/login");
-  }
-
-  if (!res.ok) {
-    throw new Error("Error al cargar los proyectos");
-  }
-
-  return res.json();
-}
+import { getProjectsServer } from "@/lib/server-api";
+import type { Project } from "@/lib/api";
 
 export default async function Home() {
-  const projects = await getProjects();
+  const projects = await getProjectsServer();
 
   return (
     <main className="min-h-screen px-6 py-10 md:px-12">
@@ -56,6 +27,10 @@ export default async function Home() {
               className="rounded-full bg-primary px-6 py-3 text-base font-semibold text-paper transition-colors hover:bg-primary-dark">
                 + Nuevo proyecto
               </Link>
+            <Link href="/calendario"
+              className="rounded-full border border-border px-6 py-3 text-base font-semibold text-ink transition-colors hover:bg-surface">
+                Calendario
+            </Link>  
               <LogoutButton />
           </div>
         </div>

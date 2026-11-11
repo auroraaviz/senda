@@ -18,6 +18,15 @@ api.interceptors.response.use(
   }
 );
 
+export interface Phase {
+  id: number;
+  name: string;
+  orderNumber: number;
+  progress: number;
+  weight: number;
+  dueDate: string | null; 
+}
+
 export interface Project {
   id: number;
   title: string;
@@ -26,7 +35,7 @@ export interface Project {
   endDate: string | null;
   progress: number;
   status?: string;
-  phases: unknown[];
+  phases: Phase[];
 }
 
 export async function getProjects(): Promise<Project[]> {
