@@ -50,3 +50,32 @@ export function buildMonthGrid(year: number, month: number): (string | null)[] {
     while (cells.length % 7 !== 0) cells.push(null);
     return cells; 
 }
+
+export interface ProjectDeadline {
+    projectId:  number;
+    projectTitle: string;
+    endDate: string;
+    progress: number;
+    delayed: boolean;
+}
+
+//una entrega por proyecto que tenga fecha de fin
+//retrasada = fecha vencida y progreso <100
+export function getProjectDeadlines(
+    projects: Project[],
+    today: Date = new Date()
+): ProjectDeadline[] {
+    const todayISO = toISODate(today);
+    return projects
+    .filter((p) => p.endDate !== null)
+    .map((p) => {
+        const end = (p.endDate as string).slice(0, 10);
+        return {
+            projectId: p.id,
+            projectTitle: p.title,
+            endDate: end,
+            progress: p.progress,
+            delayed: end < todayISO && p.progress < 100,
+        };
+    });
+}

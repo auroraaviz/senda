@@ -2,7 +2,12 @@
  
 import { useState } from "react";
 import Link from "next/link";
-import { buildMonthGrid, toISODate, type CalendarEvent } from "@/lib/calendar";
+import {
+  buildMonthGrid,
+  toISODate,
+  type CalendarEvent,
+  type ProjectDeadline,
+} from "@/lib/calendar";
 
 const MONTHS = [
     "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre",
@@ -16,7 +21,19 @@ function chipColor(e: CalendarEvent) {
     return "bg-accent text-ink";
 }
 
-export default function CalendarView({ events }: { events: CalendarEvent[] }) {
+function deadLineStyle(d: ProjectDeadline) {
+  if (d.delayed) return "border-oxido text-oxido";
+  if (d.progress === 100) return "border-secondary text-ink";
+  return "border-primary text-primary";
+}
+
+export default function CalendarView({ 
+  events, 
+  deadlines, 
+}: { 
+  events: CalendarEvent[];
+  deadlines: ProjectDeadline[];
+}) {
     const now = new Date();
     const [year, setYear] = useState(now.getFullYear());
     const [month, setMonth] = useState(now.getMonth());
@@ -32,6 +49,11 @@ export default function CalendarView({ events }: { events: CalendarEvent[] }) {
     const byDate = new Map<string, CalendarEvent[]>();
     for (const e of events) {
         byDate.set(e.dueDate, [...(byDate.get(e.dueDate) ?? []), e]);
+    }
+
+    const deadLinesByDate = new Map<string, ProjectDeadline[]>();
+    for (const d of deadlines) {
+      deadLinesByDate.set(d.endDate, [...(deadLinesByDate.get(d.endDate) ?? []), d]);
     }
 
     const cells = buildMonthGrid(year, month);
@@ -92,14 +114,14 @@ export default function CalendarView({ events }: { events: CalendarEvent[] }) {
                     {Number(iso.slice(8))}
                   </span>
                   <div className="mt-1 space-y-1">
-                    {(byDate.get(iso) ?? []).map((e) => (
+                    {(deadLinesByDate.get(iso) ?? []).map((d) => (
                       <Link
-                        key={e.phaseId}
-                        href={`/projects/${e.projectId}`}
-                        title={`${e.projectTitle} · ${e.phaseName}`}
-                        className={`block truncate rounded-md px-1.5 py-0.5 text-xs font-semibold ${chipColor(e)}`}
+                        key={`p-${d.projectId}`}
+                        href={`/projects/${d.projectId}`}
+                        title={`Entrega: ${d.projectTitle}`}
+                        className={`block truncate rounded-md border-2 bg-white px-1.5 py-0.5 text-xs font-bold ${deadLineStyle(d)}`}
                       >
-                        {e.phaseName}
+                       ⚑ {d.projectTitle}
                       </Link>
                     ))}
                   </div>
@@ -114,6 +136,7 @@ export default function CalendarView({ events }: { events: CalendarEvent[] }) {
         <span><span className="mr-1 inline-block h-3 w-3 rounded bg-accent align-middle" />Pendiente</span>
         <span><span className="mr-1 inline-block h-3 w-3 rounded bg-[#B8562E] align-middle" />Retrasada</span>
         <span><span className="mr-1 inline-block h-3 w-3 rounded bg-secondary align-middle" />Completada</span>
+        <span><span className="mr-1 inline-block h-3 w-3 rounded border-2 border-primary bg-white align-middle" />⚑ Entrega del proyecto</span>
       </div>
     </div>
   );

@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { getCalendarEvents, buildMonthGrid, toISODate } from "./calendar";
+import { getCalendarEvents, buildMonthGrid, toISODate, getProjectDeadlines } from "./calendar";
 import type { Project } from "./api";
 
 function project(phases: Partial<Project["phases"][number]>[]): Project {
@@ -78,5 +78,21 @@ describe("buildMonthGrid", () => {
 describe("toISODate", () => {
   it("formatea con ceros a la izquierda", () => {
     expect(toISODate(new Date(2026, 0, 5))).toBe("2026-01-05");
+  });
+});
+
+describe("getProjectDeadlines", () => {
+  it("ignora los proyectos sin fecha de fin", () => {
+    expect(getProjectDeadlines([project([])], today)).toHaveLength(0);
+  });
+
+  it("marca como retrasado un proyecto vencido y sin terminar", () => {
+    const p = { ...project([]), endDate: "2026-11-01", progress: 50 };
+    expect(getProjectDeadlines([p], today)[0].delayed).toBe(true);
+  });
+
+  it("no marca como retrasado un proyecto vencido al 100%", () => {
+    const p = { ...project([]), endDate: "2026-11-01", progress: 100 };
+    expect(getProjectDeadlines([p], today)[0].delayed).toBe(false);
   });
 });
