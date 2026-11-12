@@ -32,6 +32,7 @@ Puedes entrar sin registrarte:
 - Resumen con el progreso medio y un gráfico de proyectos por estado
 - Filtro por estado y orden por progreso, fecha de entrega o título
 - Calendario mensual con las fechas límite de las fases y las entregas de los proyectos; lo retrasado se     marca en otro color
+- API documentada con OpenAPI/Swagger: senda-backend-6bws.onrender.com/swagger-ui/index.html. La             documentación es pública a propósito; los endpoints siguen protegidos.
 
 ---
 
