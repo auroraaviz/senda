@@ -31,8 +31,8 @@ Puedes entrar sin registrarte:
 - Cada usuario ve y gestiona solo sus proyectos (aislamiento de datos, comprobado también en las fases)
 - Resumen con el progreso medio y un gráfico de proyectos por estado
 - Filtro por estado y orden por progreso, fecha de entrega o título
-- Calendario mensual con las fechas límite de las fases y las entregas de los proyectos; lo retrasado se     marca en otro color
-- API documentada con OpenAPI/Swagger: senda-backend-6bws.onrender.com/swagger-ui/index.html. La             documentación es pública a propósito; los endpoints siguen protegidos.
+- Calendario mensual con las fechas límite de las fases y las entregas de los proyectos; lo retrasado se    marca en otro color
+- API documentada con OpenAPI/Swagger: [senda-backend-6bws.onrender.com/swagger-ui/index.html]              (https://senda-backend-6bws.onrender.com/swagger-ui/index.html). La documentación es pública a            propósito; los endpoints siguen protegidos
 
 ---
 
@@ -42,13 +42,20 @@ Puedes entrar sin registrarte:
 `Next.js` `React` `TypeScript` `Tailwind CSS v4` `Axios`
 
 **Backend**
-`Java 17` `Spring Boot` `Spring Security` `JWT` `Spring Data JPA` `Lombok` `BCrypt` `Maven` `JUnit 5` `Mockito`
+`Java 17` `Spring Boot` `Spring Security` `JWT` `Spring Data JPA` `Lombok` `BCrypt` `Maven` `OpenAPI/Swagger`
 
 **Base de datos**
 `MySQL`
 
 **Despliegue**
 `Vercel` `Render` `Docker` `Aiven`
+
+**Testing**
+`JUnit 5` `Mockito` `MockMvc` `H2` `Vitest` `Testing Library` `GitHub Actions`
+
+---
+
+- **Errores centralizados:** `GlobalExceptionHandler` devuelve códigos claros (401 con credenciales incorrectas, 404 con recursos ajenos o inexistentes, 400 en validaciones) en lugar de un 500 genérico. Sin sesión, la API responde 403.
 
 ---
 
@@ -126,22 +133,26 @@ BACKEND_URL=http://localhost:8080
 
 ## Tests
 
-**Backend:** 29 tests con JUnit 5 y Mockito. Cubren el cálculo del progreso ponderado, el estado del proyecto, la detección de fases retrasadas y el aislamiento de datos entre usuarios. Se ejecutan sin base de datos externa: 28 son tests unitarios y el de arranque de Spring usa H2 en memoria.
+**Backend:** 38 tests con JUnit 5, Mockito y MockMvc. No necesitan una base de datos externa: la lógica se prueba con tests unitarios y los de integración usan H2 en memoria.
 
-```
+- Lógica de negocio: progreso ponderado, estado del proyecto y fases retrasadas.
+- Seguridad (integración): acceso sin sesión (403), token inválido y aislamiento de datos entre usuarios, tanto en proyectos como en fases.
+
+```bash
 cd BACKEND
 ./mvnw test     # en Windows: .\mvnw test
 ```
 
-**Frontend:** 20 tests con Vitest y Testing Library: listado de proyectos (filtros por estado, contadores y los tres criterios de orden), lógica del calendario (fases retrasadas, fases sin fecha y cuadrícula mensual) y formateo de fechas.
+**Frontend:** 20 tests con Vitest y Testing Library: listado de proyectos (filtros por estado, contadores y orden), lógica del calendario (fases retrasadas, fases sin fecha, cuadrícula mensual y entregas) y formateo de fechas.
 
-```
+```bash
 cd FRONTEND
 npm test
 ```
 
----
+Todos los tests se ejecutan automáticamente en GitHub Actions en cada push.
 
+---
 
 ## Dónde encontrarme
 
