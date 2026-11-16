@@ -124,6 +124,17 @@ export default function CalendarView({
                        ⚑ {d.projectTitle}
                       </Link>
                     ))}
+
+                    {(byDate.get(iso) ?? []).map((e) => (
+                      <Link
+                        key={e.phaseId}
+                        href={`/projects/${e.projectId}`}
+                        title={`${e.projectTitle} · ${e.phaseName}`}
+                        className={`block truncate rounded-md px-1.5 py-0.5 text-xs font-semibold ${chipColor(e)}`}
+                        >
+                          {e.phaseName}
+                     </Link>
+                    ))}
                   </div>
                 </>
               )}
