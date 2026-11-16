@@ -31,8 +31,8 @@ Puedes entrar sin registrarte:
 - Cada usuario ve y gestiona solo sus proyectos (aislamiento de datos, comprobado también en las fases)
 - Resumen con el progreso medio y un gráfico de proyectos por estado
 - Filtro por estado y orden por progreso, fecha de entrega o título
-- Calendario mensual con las fechas límite de las fases y las entregas de los proyectos; lo retrasado se    marca en otro color
-- API documentada con OpenAPI/Swagger: [senda-backend-6bws.onrender.com/swagger-ui/index.html]              (https://senda-backend-6bws.onrender.com/swagger-ui/index.html). La documentación es pública a            propósito; los endpoints siguen protegidos
+- Calendario mensual con las fechas límite de las fases y las entregas de los proyectos; lo retrasado se marca en otro color
+- API documentada con OpenAPI/Swagger: [senda-backend-6bws.onrender.com/swagger-ui/index.html](https://senda-backend-6bws.onrender.com/swagger-ui/index.html). La documentación es pública a propósito; los endpoints siguen protegidos
 
 ---
 
@@ -48,14 +48,10 @@ Puedes entrar sin registrarte:
 `MySQL`
 
 **Despliegue**
-`Vercel` `Render` `Docker` `Aiven`
+`Vercel` `Render` `Docker` `Docker Compose` `Aiven`
 
 **Testing**
 `JUnit 5` `Mockito` `MockMvc` `H2` `Vitest` `Testing Library` `GitHub Actions`
-
----
-
-- **Errores centralizados:** `GlobalExceptionHandler` devuelve códigos claros (401 con credenciales incorrectas, 404 con recursos ajenos o inexistentes, 400 en validaciones) en lugar de un 500 genérico. Sin sesión, la API responde 403.
 
 ---
 
@@ -73,7 +69,7 @@ abrir CORS con credenciales en producción.
 - **Cookie `httpOnly` en vez de `localStorage`:** el token no es accesible desde JavaScript, lo que reduce el riesgo ante XSS.
 - **Proxy con `rewrites` en vez de `SameSite=None`:** más simple y más seguro.
 - **Rutas protegidas desde el servidor:** los Server Components leen la cookie y redirigen con `redirect()`.
-- **Errores centralizados:** `GlobalExceptionHandler` devuelve 401 claros en lugar de un 500 genérico.
+- **Errores centralizados:** `GlobalExceptionHandler` devuelve códigos claros (401 con credenciales incorrectas, 404 con recursos ajenos o inexistentes, 400 en validaciones) en lugar de un 500 genérico. Sin sesión, la API responde 403.
 - **Aislamiento de datos por usuario:** cada consulta filtra por el usuario del token. Pedir un proyecto ajeno devuelve 404, y en las fases se comprueba además que la fase pertenece al proyecto de la URL.
 
 ---
@@ -82,15 +78,28 @@ abrir CORS con credenciales en producción.
 
 ```
 senda/
-├── BACKEND/    API REST (config, controller, dto, exception, mapper, model, repository, service)
-└── FRONTEND/   Next.js (App Router), componentes y next.config.ts con los rewrites
+├── BACKEND/            API REST (config, controller, dto, exception, mapper, model, repository, service)
+├── FRONTEND/           Next.js (App Router), componentes y next.config.ts con los rewrites
+└── docker-compose.yml  MySQL + backend + frontend con un comando
 ```
 
 ---
 
 ## Ejecutar en local
 
-**1. Base de datos:** crea una base de datos MySQL vacía (Hibernate crea las tablas al arrancar).
+### Opción A: Docker (recomendada)
+
+Solo necesitas [Docker Desktop](https://www.docker.com/products/docker-desktop/). Levanta MySQL, el backend y el frontend con un comando:
+
+```bash
+docker compose up --build
+```
+
+Abre [http://localhost:3000](http://localhost:3000), regístrate y empieza. La documentación de la API queda en [http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html). Para parar: `docker compose down` (añade `-v` para borrar también los datos).
+
+### Opción B: sin Docker
+
+**1. Base de datos:** crea una base de datos MySQL vacía llamada `organizador_proyectos` (Hibernate crea las tablas al arrancar).
 
 **2. Backend** (`http://localhost:8080`)
 
