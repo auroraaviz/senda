@@ -5,6 +5,7 @@ import Link from "next/link";
 import StatusBadge from "@/components/StatusBadge";
 import DeleteProjectButton from "@/components/DeleteProjectButton";
 import { formatDate } from "@/lib/dates";
+import { daysUntil, formatRelative } from "@/lib/upcoming";
 
 interface Project {
   id: number;
@@ -43,6 +44,12 @@ function barColorFor(status?: string): string {
   if (status === "COMPLETED") return "bg-secondary";
   if (status === "DELAYED") return "bg-oxido";
   return "bg-accent";
+}
+
+function dueInfo(p: Project): { text: string; late: boolean } | null {
+  if (!p.endDate || p.progress >= 100) return null;
+  const days = daysUntil(p.endDate.slice(0, 10));
+  return { text: formatRelative(days), late: days < 0};
 }
 
 function sortProjects(list: Project[], sort: SortKey): Project[] {
@@ -126,50 +133,55 @@ export default function ProjectsList({ projects }: { projects: Project[] }) {
         </div>
       ) : (
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {visible.map((project) => (
-            <Link
-              key={project.id}
-              href={`/projects/${project.id}`}
-              className="group flex flex-col rounded-card bg-surface p-6 shadow-card transition-transform hover:-translate-y-0.5"
-            >
-              <div className="flex items-start justify-between gap-3">
-                <h2 className="font-display text-xl font-semibold text-ink">
-                  {project.title}
-                </h2>
-                <span className="whitespace-nowrap text-sm font-semibold text-ink-soft">
-                  {sizeLabels[project.size]}
-                </span>
-              </div>
+          {visible.map((project) => {
+  const due = dueInfo(project);
+  return (
+    <Link
+      key={project.id}
+      href={`/projects/${project.id}`}
+      className="group flex flex-col rounded-card bg-surface p-6 shadow-card transition-transform hover:-translate-y-0.5"
+    >
+      <div className="flex items-start justify-between gap-3">
+        <h2 className="font-display text-2xl font-bold leading-tight text-ink">
+          {project.title}
+        </h2>
+        <DeleteProjectButton projectId={project.id} />
+      </div>
 
-              <div className="mt-3">
-                <StatusBadge status={project.status} />
-              </div>
+      <div className="mt-3 flex flex-wrap items-center gap-3">
+        <StatusBadge status={project.status} />
+        <span className="text-sm font-semibold text-ink-soft">
+          {sizeLabels[project.size]}
+        </span>
+      </div>
 
-              <div className="mt-6">
-                <div className="mb-2 flex items-center justify-between">
-                  <span className="text-sm text-ink-soft">Progreso</span>
-                  <span className="font-mono text-base font-semibold text-ink">
-                    {project.progress}%
-                  </span>
-                </div>
-                <div className="h-2.5 overflow-hidden rounded-full bg-border">
-                  <div
-                    className={`h-full rounded-full transition-all ${barColorFor(project.status)}`}
-                    style={{ width: `${project.progress}%` }}
-                  />
-                </div>
-              </div>
+      <div className="mt-6">
+        <p className="font-mono text-5xl font-medium leading-none text-ink">
+          {project.progress}
+          <span className="text-2xl text-ink-soft">%</span>
+        </p>
+        <div className="mt-3 h-3 overflow-hidden rounded-full bg-border">
+          <div
+            className={`h-full rounded-full transition-all ${barColorFor(project.status)}`}
+            style={{ width: `${project.progress}%` }}
+          />
+        </div>
+      </div>
 
-              <p className="mt-4 text-sm text-ink-soft">
-                Entrega{" "}
-                <span className="font-semibold text-ink">{formatDate(project.endDate)}</span>
-              </p>
-
-              <div className="mt-5 flex justify-end border-t border-border pt-4">
-                <DeleteProjectButton projectId={project.id} />
-              </div>
-            </Link>
-          ))}
+      <div className="mt-5 flex items-center justify-between border-t border-border pt-4 text-sm">
+        <span className="text-ink-soft">
+          Entrega{" "}
+          <span className="font-semibold text-ink">{formatDate(project.endDate)}</span>
+        </span>
+        {due && (
+          <span className={`font-semibold ${due.late ? "text-oxido" : "text-ink-soft"}`}>
+            {due.text}
+          </span>
+        )}
+      </div>
+    </Link>
+  );
+})}
         </div>
       )}
     </div>

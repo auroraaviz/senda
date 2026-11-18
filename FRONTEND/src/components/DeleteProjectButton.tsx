@@ -40,8 +40,18 @@ export default function DeleteProjectButton({
         <button 
             onClick={handleDelete}
             disabled={loading}
-            className="rounded-full border border-oxido/30 px-5 py-2 text-sm font-semibold text-oxido transition-colors hover:bg-oxido/10 disabled:opacity-50">
-                {loading ? "Eliminando..." : "Eliminar"}
+            aria-label="Eliminar proyecto"
+            className="rounded-full p-2 text-ink-soft opacity-60 transition hover:bg-oxido/10 hover:text-oxido hover:opacity-100 focus-visible:opacity-100 disabled:opacity-40">
+                {loading ? (
+                    <span className="text-xs font-semibold"> ... </span>
+                ) : (
+                    <svg viewBox="0 0 24 24" className="h-5  w-5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                        <path d="M3 6h18" />
+                        <path d="M8 6V4h8v2" />
+                        <path d="M6 6l1 14h10l1-14" />
+                        <path d="M10 11v5M14 11v5" />
+                    </svg>
+                )}
             </button>
     );
 } 
