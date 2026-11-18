@@ -43,10 +43,6 @@ export default function ProjectsSummary({ projects }: Props) {
     
     if (total === 0) return null;
 
-    const average = Math.round(
-        projects.reduce((sum, p) => sum + p.progress, 0) / total
-    );
-
     const counts = STATES.map((state) => ({
         ...state,
         count: projects.filter((p) => p.status === state.key).length,
@@ -83,24 +79,11 @@ export default function ProjectsSummary({ projects }: Props) {
         .join(", ");
 
     return (
-    <section className="mb-10 grid gap-8 rounded-card bg-surface p-6 shadow-card md:grid-cols-[auto_1fr] md:items-center md:p-8">
-      <div>
-        <p className="text-sm font-semibold uppercase tracking-wide text-ink-soft">
-          Progreso medio
-        </p>
-        <p className="mt-1 font-mono text-6xl font-medium leading-none text-ink">
-          {Math.round(average * k)}
-          <span className="text-3xl text-ink-soft">%</span>
-        </p>
-        <p className="mt-2 text-sm text-ink-soft">
-          en {total} {total === 1 ? "proyecto" : "proyectos"}
-        </p>
-      </div>
-
-      <div className="flex flex-col items-center gap-8 sm:flex-row sm:gap-10">
+    <section className="flex h-full items-center rounded-card bg-surface p-6 shadow-card md:p-8">
+      <div className="flex w-full flex-col items-center justify-center gap-8 sm:flex-row sm:gap-10">
         <svg
           viewBox="0 0 100 100"
-          className="h-28 w-28 shrink-0"
+          className="h-36 w-36 shrink-0"
           role="img"
           aria-label={`Proyectos por estado: ${description}`}
         >

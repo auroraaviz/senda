@@ -27,14 +27,14 @@
   --font-sans: var(--font-mulish);
   --font-mono: var(--font-plex-mono);
   --radius-card: 1.25rem;
-  --shadow-card: 0 1px 2px rgb(46 33 27 / 0.04), 4px 16px rgb(46 33 27 / 0.05);
+  --shadow-card: 0 1px 2px rgb(46 33 27 / 0.04), 0 4px 16px rgb(46 33 27 / 0.06);
 }
 
 @layer base {
 
 body {
   background: var(--paper);
-  color: var(--ink);
+  color: var(--ink); 
   font-family: var(--font-sans), sans-serif;
 }
 
