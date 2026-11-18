@@ -152,7 +152,7 @@ cd BACKEND
 ./mvnw test     # en Windows: .\mvnw test
 ```
 
-**Frontend:** 20 tests con Vitest y Testing Library: listado de proyectos (filtros por estado, contadores y orden), lógica del calendario (fases retrasadas, fases sin fecha, cuadrícula mensual y entregas) y formateo de fechas.
+**Frontend:** 25 tests con Vitest y Testing Library: listado de proyectos (filtros por estado, contadores y orden), lógica del calendario (fases retrasadas, fases sin fecha, cuadrícula mensual y entregas), próximas entregas (cuenta atrás y ordenación) y formateo de fechas.
 
 ```bash
 cd FRONTEND
