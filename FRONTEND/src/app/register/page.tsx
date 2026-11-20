@@ -3,6 +3,7 @@
 import {useState} from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import ThemeToggle from "@/components/ThemeToggle";
 
 export default function RegisterPage() {
     const [username, setUsername] = useState("");
@@ -49,6 +50,10 @@ export default function RegisterPage() {
                         </div>
                         <h1 className="text-4xl font-display font-semibold text-ink"> Senda </h1>
                         <p className="text-sm text-ink-soft mt-2"> Retoma el camino </p>
+                    </div>
+
+                    <div className="absolute right-4 top-4">
+                        <ThemeToggle />
                     </div>
 
                     <form 

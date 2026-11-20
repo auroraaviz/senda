@@ -11,9 +11,26 @@
   --secondary: #9DB684;
   --oxido: #B8562E;
   --border-color: #E4DCC8; 
+  --card-shadow: 0 1px 2px rgb(46 33 27 / 0.04), 0 4px 16px rgb(46 33 27 / 0.06);
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --paper: #1B1613;
+  --surface: #262019;
+  --ink: #F1EBDD;
+  --ink-soft: #A89B90;
+  --primary: #C98F82;
+  --primary-dark: #DDB0A5;
+  --accent: #C3C947;
+  --secondary: #9DB684;
+  --oxido: #E0804F;
+  --border-color: #3A3029;
+  --card-shadow: 0 1px 2px rgb(0 0 0 / 0.3), 0 4px 16px rgb(0 0 0 / 0.25);
 }
 
 @theme inline {
+  --color-surface: var(--surface);
   --color-paper: var(--paper);
   --color-ink: var(--ink);
   --color-ink-soft: var(--ink-soft);
@@ -27,7 +44,7 @@
   --font-sans: var(--font-mulish);
   --font-mono: var(--font-plex-mono);
   --radius-card: 1.25rem;
-  --shadow-card: 0 1px 2px rgb(46 33 27 / 0.04), 0 4px 16px rgb(46 33 27 / 0.06);
+  --shadow-card: var(--card-shadow);
 }
 
 @layer base {

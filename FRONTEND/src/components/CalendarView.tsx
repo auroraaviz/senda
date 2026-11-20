@@ -16,9 +16,9 @@ const MONTHS = [
 const WEEKDAYS = ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"];
 
 function chipColor(e: CalendarEvent) {
-    if (e.delayed) return "bg-[#B8562E] text-white";
-    if (e.progress === 100) return "bg-secondary text-ink";
-    return "bg-accent text-ink";
+    if (e.delayed) return "bg-oxido text-[#FFFFFF]";
+    if (e.progress === 100) return "bg-secondary text-[#2E211B]";
+    return "bg-accent text-[#2E211B]";
 }
 
 function deadLineStyle(d: ProjectDeadline) {
@@ -102,7 +102,7 @@ export default function CalendarView({
           {cells.map((iso, i) => (
             <div
               key={i}
-              className={`min-h-24 p-1.5 ${iso ? "bg-white" : "bg-surface/60"}`}
+              className={`min-h-24 p-1.5 ${iso ? "bg-surface" : "bg-paper"}`}
             >
               {iso && (
                 <>
@@ -119,7 +119,7 @@ export default function CalendarView({
                         key={`p-${d.projectId}`}
                         href={`/projects/${d.projectId}`}
                         title={`Entrega: ${d.projectTitle}`}
-                        className={`block truncate rounded-md border-2 bg-white px-1.5 py-0.5 text-xs font-bold ${deadLineStyle(d)}`}
+                        className={`block truncate rounded-md border-2 bg-surface px-1.5 py-0.5 text-xs font-bold ${deadLineStyle(d)}`}
                       >
                        ⚑ {d.projectTitle}
                       </Link>
@@ -145,9 +145,9 @@ export default function CalendarView({
 
       <div className="mt-4 flex flex-wrap gap-4 text-sm text-ink-soft">
         <span><span className="mr-1 inline-block h-3 w-3 rounded bg-accent align-middle" />Pendiente</span>
-        <span><span className="mr-1 inline-block h-3 w-3 rounded bg-[#B8562E] align-middle" />Retrasada</span>
+        <span><span className="mr-1 inline-block h-3 w-3 rounded bg-oxido align-middle" />Retrasada</span>
         <span><span className="mr-1 inline-block h-3 w-3 rounded bg-secondary align-middle" />Completada</span>
-        <span><span className="mr-1 inline-block h-3 w-3 rounded border-2 border-primary bg-white align-middle" />⚑ Entrega del proyecto</span>
+        <span><span className="mr-1 inline-block h-3 w-3 rounded border-2 border-primary bg-surface align-middle" />⚑ Entrega del proyecto</span>
       </div>
     </div>
   );

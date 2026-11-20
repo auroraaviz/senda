@@ -30,9 +30,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="es"
-      className={`${quicksand.variable} ${mulish.variable} ${plexMono.variable} h-full antialiased`}>
+    <html lang="es" suppressHydrationWarning 
+      className={`${quicksand.variable} ${mulish.variable} ${plexMono.variable} h-full antialiased`}
+    >
+    <head> 
+    <script 
+      dangerouslySetInnerHTML={{
+        __html: `try{var t=localStorage.getItem("theme");if(!t){t=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"}document.documentElement.dataset.theme=t}catch(e){}`,
+      }}
+      />
+    </head>
         <body className="min-h-full flex flex-col bg-paper text-ink">
           {children}
         </body>

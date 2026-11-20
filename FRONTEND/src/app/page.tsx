@@ -8,6 +8,8 @@ import { getProjectsServer, getUsernameServer } from "@/lib/server-api";
 import { getCalendarEvents, getProjectDeadlines } from "@/lib/calendar";
 import { getUpcoming } from "@/lib/upcoming";
 import EmptyState from "@/components/EmptyState";
+import ThemeToggle from "@/components/ThemeToggle";
+
 
 export default async function Home() {
   const [projects, username] = await Promise.all([
@@ -57,6 +59,7 @@ export default async function Home() {
             >
               + Nuevo proyecto
             </Link>
+            <ThemeToggle />
             <LogoutButton />
           </div>
         </div>
