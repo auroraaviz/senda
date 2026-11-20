@@ -7,6 +7,7 @@ import EditProjectPanel from "@/components/EditProjectPanel";
 import DeletePhaseButton from "@/components/DeletePhaseButton"; 
 import EditPhasePanel from "@/components/EditPhasePanel";
 import { formatDate } from "@/lib/dates";
+import EmptyState from "@/components/EmptyState";
 
 interface Project {
     id: number;
@@ -93,11 +94,12 @@ export default async function ProjectDetailPage({
                             {sortedPhases.filter((p) => p.progress >= 100).length} / {sortedPhases.length} completadas
                         </span>
                     </div>
-
-                {sortedPhases.length === 0 ? ( 
-                    <div className="rounded-card border border-dashed border-border bg-surface/60 p-10 text-center text-base text-ink-soft">
-                        Este proyecto aún no tiene fases. Añade la primera.
-                        </div>
+                {sortedPhases.length === 0 ? (
+                <EmptyState
+                    compact
+                    title="Aún no hay hitos en este sendero"
+                    text="Añade la primera fase abajo y empieza a marcar tu avance."
+                />
                 ) : (
                     <div className="space-y-5">
                         {sortedPhases.map((phase) => {

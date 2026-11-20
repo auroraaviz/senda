@@ -6,6 +6,7 @@ import StatusBadge from "@/components/StatusBadge";
 import DeleteProjectButton from "@/components/DeleteProjectButton";
 import { formatDate } from "@/lib/dates";
 import { daysUntil, formatRelative } from "@/lib/upcoming";
+import EmptyState from "@/components/EmptyState";
 
 interface Project {
   id: number;
@@ -128,9 +129,20 @@ export default function ProjectsList({ projects }: { projects: Project[] }) {
       </div>
 
       {visible.length === 0 ? (
-        <div className="rounded-card border border-dashed border-border bg-surface/60 py-16 text-center text-base text-ink-soft">
-          No hay proyectos con este estado.
-        </div>
+        <EmptyState
+          compact
+          title="Nada por aquí"
+          text="Ningún proyecto tiene este estado ahora mismo."
+          action={
+            <button
+              type="button"
+              onClick={() => setFilter("ALL")}
+              className="rounded-full border border-border px-5 py-2 text-sm font-semibold text-ink transition-colors hover:border-primary hover:text-primary"
+            >
+              Ver todos
+            </button>
+          }
+          />
       ) : (
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {visible.map((project) => {

@@ -93,7 +93,7 @@ describe("ProjectsList", () => {
 
         await user.click(screen.getByRole("button", { name: "Completados 0"}));
         
-        expect(screen.getByText("No hay proyectos con este estado.")).toBeInTheDocument();
+       expect(screen.getByText("Nada por aquí")).toBeInTheDocument();
         expect(screen.queryAllByRole("link")).toHaveLength(0);
     });
 
